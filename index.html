@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CreatorAI - Gerador de Imagens e Vídeos com IA</title>
+    <title>CreatorAI - Gerador de Imagens com IA</title>
+    <script src="https://js.puter.com/v2/"></script>
     <style>
         * {
             margin: 0;
@@ -116,7 +117,8 @@
         }
 
         input[type="text"],
-        textarea {
+        textarea,
+        select {
             width: 100%;
             padding: 0.75rem;
             background: rgba(51, 65, 85, 0.5);
@@ -129,46 +131,26 @@
         }
 
         input[type="text"]:focus,
-        textarea:focus {
+        textarea:focus,
+        select:focus {
             outline: none;
             background: rgba(51, 65, 85, 0.8);
             border-color: #a855f7;
             box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.1);
         }
 
+        select {
+            cursor: pointer;
+        }
+
+        select option {
+            background: #1e293b;
+            color: #fff;
+        }
+
         textarea {
             resize: vertical;
             min-height: 80px;
-        }
-
-        .type-selector {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .type-btn {
-            padding: 1rem;
-            background: rgba(51, 65, 85, 0.5);
-            border: 2px solid rgba(139, 92, 246, 0.3);
-            border-radius: 8px;
-            color: #cbd5e1;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .type-btn:hover {
-            background: rgba(51, 65, 85, 0.8);
-            border-color: #a855f7;
-        }
-
-        .type-btn.active {
-            background: linear-gradient(135deg, #a855f7 0%, #ec4899 100%);
-            border-color: transparent;
-            color: #fff;
         }
 
         .btn-generate {
@@ -257,15 +239,16 @@
             border-radius: 12px;
             padding: 1rem;
             margin-bottom: 1rem;
-            max-height: 500px;
+            max-height: 600px;
             overflow: auto;
+            text-align: center;
         }
 
-        .media-container img,
-        .media-container video {
-            width: 100%;
+        .media-container img {
+            max-width: 100%;
+            max-height: 500px;
             border-radius: 8px;
-            display: block;
+            display: inline-block;
         }
 
         .prompt-display {
@@ -351,10 +334,6 @@
                 font-size: 2rem;
             }
 
-            .type-selector {
-                grid-template-columns: 1fr;
-            }
-
             .card {
                 padding: 1.5rem;
             }
@@ -367,7 +346,7 @@
             <div class="logo">✨</div>
             <div class="header-text">
                 <h1>CreatorAI</h1>
-                <p>Gerador de Imagens e Vídeos com IA</p>
+                <p>Gerador de Imagens com IA Real</p>
             </div>
         </div>
     </header>
@@ -376,7 +355,7 @@
         <div class="container">
             <div class="hero">
                 <h2>Crie com <span style="color: #a855f7;">IA</span></h2>
-                <p>Gere imagens e vídeos incríveis apenas descrevendo o que você quer. Simples, rápido e poderoso.</p>
+                <p>Gere imagens incríveis apenas descrevendo o que você quer. Powered by Puter.js com modelos reais de IA.</p>
             </div>
 
             <div class="card">
@@ -384,29 +363,32 @@
                     <label for="prompt">O que você quer criar?</label>
                     <textarea 
                         id="prompt" 
-                        placeholder="Ex: Um gato fofo dormindo em um sofá, luz natural, fotografia profissional"
+                        placeholder="Ex: Um gato fofo voando entre nuvens, estilo fantasia, cores vibrantes"
                     ></textarea>
                 </div>
 
                 <div class="form-group">
-                    <label>Tipo de conteúdo</label>
-                    <div class="type-selector">
-                        <button class="type-btn active" data-type="image">📷 Imagem</button>
-                        <button class="type-btn" data-type="video">🎬 Vídeo</button>
-                    </div>
+                    <label for="model">Modelo de IA</label>
+                    <select id="model">
+                        <option value="openai/gpt-image-2">GPT Image 2 (Recomendado)</option>
+                        <option value="black-forest-labs/flux-2-pro">FLUX.2 Pro</option>
+                        <option value="google/gemini-3-pro-image-preview">Gemini 3 Pro</option>
+                        <option value="stabilityai/stable-diffusion-3-medium">Stable Diffusion 3</option>
+                        <option value="x-ai/grok-imagine-image">Grok Imagine</option>
+                    </select>
                 </div>
 
                 <button class="btn-generate" id="generateBtn">
                     <span>✨</span>
-                    <span>Gerar</span>
+                    <span>Gerar Imagem</span>
                 </button>
             </div>
 
             <div class="result-container" id="resultContainer">
                 <div id="messageContainer"></div>
                 <div class="result-header">
-                    <h3>Seu Resultado</h3>
-                    <span class="badge" id="resultBadge"></span>
+                    <h3>Sua Imagem Gerada</h3>
+                    <span class="badge">🖼️ Imagem</span>
                 </div>
                 <div class="prompt-display">
                     <strong>Prompt:</strong> <span id="promptDisplay"></span>
@@ -414,42 +396,34 @@
                 <div class="media-container" id="mediaContainer"></div>
                 <button class="btn-download" id="downloadBtn">
                     <span>⬇️</span>
-                    <span id="downloadText">Download</span>
+                    <span>Download Imagem</span>
                 </button>
             </div>
 
             <div class="empty-state" id="emptyState">
                 <div class="empty-state-icon">✨</div>
-                <p>Comece digitando um prompt acima para gerar sua primeira criação</p>
+                <p>Comece digitando um prompt acima para gerar sua primeira imagem com IA real</p>
             </div>
         </div>
     </main>
 
     <footer>
-        <p>CreatorAI V1 • Gerador de Imagens e Vídeos com IA</p>
+        <p>CreatorAI • Powered by Puter.js com GPT-4, FLUX, Gemini e Stable Diffusion</p>
     </footer>
 
     <script>
-        let selectedType = 'image';
-        let currentResult = null;
-
-        // Type selector
-        document.querySelectorAll('.type-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                selectedType = btn.dataset.type;
-            });
-        });
+        let currentImageElement = null;
+        let currentPrompt = '';
 
         // Generate button
-        document.getElementById('generateBtn').addEventListener('click', generateContent);
+        document.getElementById('generateBtn').addEventListener('click', generateImage);
 
         // Download button
-        document.getElementById('downloadBtn').addEventListener('click', downloadContent);
+        document.getElementById('downloadBtn').addEventListener('click', downloadImage);
 
-        async function generateContent() {
+        async function generateImage() {
             const prompt = document.getElementById('prompt').value.trim();
+            const model = document.getElementById('model').value;
             
             if (!prompt) {
                 showMessage('Por favor, digite um prompt', 'error');
@@ -458,55 +432,31 @@
 
             const btn = document.getElementById('generateBtn');
             btn.disabled = true;
-            btn.innerHTML = '<div class="spinner"></div><span>Gerando...</span>';
+            btn.innerHTML = '<div class="spinner"></div><span>Gerando imagem...</span>';
 
             try {
-                // Simular geração com delay
-                await new Promise(resolve => setTimeout(resolve, 2000));
+                showMessage('⏳ Gerando sua imagem com IA... Isso pode levar alguns segundos.', 'info');
+                
+                // Usar Puter.js para gerar imagem real
+                const imageElement = await puter.ai.txt2img(prompt, { 
+                    model: model,
+                    quality: 'high'
+                });
 
-                // Criar imagem/vídeo simulado
-                const canvas = document.createElement('canvas');
-                canvas.width = 512;
-                canvas.height = 512;
-                const ctx = canvas.getContext('2d');
-
-                // Fundo gradiente
-                const gradient = ctx.createLinearGradient(0, 0, 512, 512);
-                gradient.addColorStop(0, '#667eea');
-                gradient.addColorStop(1, '#764ba2');
-                ctx.fillStyle = gradient;
-                ctx.fillRect(0, 0, 512, 512);
-
-                // Adicionar texto
-                ctx.fillStyle = '#fff';
-                ctx.font = 'bold 24px Arial';
-                ctx.textAlign = 'center';
-                ctx.fillText('CreatorAI', 256, 100);
-                ctx.font = '16px Arial';
-                ctx.fillText(prompt.substring(0, 40), 256, 150);
-                ctx.fillText(selectedType === 'image' ? 'Imagem Gerada' : 'Vídeo Gerado', 256, 200);
-
-                // Adicionar ícone
-                ctx.font = 'bold 80px Arial';
-                ctx.fillText(selectedType === 'image' ? '🖼️' : '🎬', 256, 350);
-
-                const dataUrl = canvas.toDataURL('image/png');
+                // Armazenar a imagem gerada
+                currentImageElement = imageElement;
+                currentPrompt = prompt;
 
                 // Exibir resultado
-                currentResult = {
-                    url: dataUrl,
-                    type: selectedType,
-                    prompt: prompt
-                };
-
                 displayResult();
-                showMessage(`✅ ${selectedType === 'image' ? 'Imagem' : 'Vídeo'} gerado com sucesso!`, 'success');
+                showMessage(`✅ Imagem gerada com sucesso usando ${model}!`, 'success');
 
             } catch (error) {
-                showMessage('❌ Erro ao gerar: ' + error.message, 'error');
+                console.error('Erro:', error);
+                showMessage('❌ Erro ao gerar imagem: ' + (error.message || 'Tente novamente'), 'error');
             } finally {
                 btn.disabled = false;
-                btn.innerHTML = '<span>✨</span><span>Gerar</span>';
+                btn.innerHTML = '<span>✨</span><span>Gerar Imagem</span>';
             }
         }
 
@@ -515,41 +465,35 @@
             const emptyState = document.getElementById('emptyState');
             const mediaContainer = document.getElementById('mediaContainer');
             const promptDisplay = document.getElementById('promptDisplay');
-            const resultBadge = document.getElementById('resultBadge');
-            const downloadText = document.getElementById('downloadText');
 
-            promptDisplay.textContent = currentResult.prompt;
-            resultBadge.textContent = currentResult.type === 'image' ? '📷 Imagem' : '🎬 Vídeo';
-            downloadText.textContent = `Download ${currentResult.type === 'image' ? 'Imagem' : 'Vídeo'}`;
+            promptDisplay.textContent = currentPrompt;
 
             mediaContainer.innerHTML = '';
-            if (currentResult.type === 'image') {
-                const img = document.createElement('img');
-                img.src = currentResult.url;
-                mediaContainer.appendChild(img);
-            } else {
-                const video = document.createElement('video');
-                video.src = currentResult.url;
-                video.controls = true;
-                video.style.maxHeight = '300px';
-                mediaContainer.appendChild(video);
+            if (currentImageElement) {
+                mediaContainer.appendChild(currentImageElement.cloneNode(true));
             }
 
             emptyState.style.display = 'none';
             resultContainer.classList.add('show');
         }
 
-        function downloadContent() {
-            if (!currentResult) return;
+        function downloadImage() {
+            if (!currentImageElement) return;
 
-            const link = document.createElement('a');
-            link.href = currentResult.url;
-            link.download = `creatorai-${currentResult.type}-${Date.now()}.${currentResult.type === 'image' ? 'png' : 'mp4'}`;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-
-            showMessage('✅ Download iniciado!', 'success');
+            // Obter a imagem do elemento
+            const img = currentImageElement.querySelector('img') || currentImageElement;
+            
+            if (img && img.src) {
+                const link = document.createElement('a');
+                link.href = img.src;
+                link.download = `creatorai-${Date.now()}.png`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                showMessage('✅ Download iniciado!', 'success');
+            } else {
+                showMessage('❌ Erro ao fazer download', 'error');
+            }
         }
 
         function showMessage(text, type) {
@@ -560,9 +504,11 @@
             container.innerHTML = '';
             container.appendChild(message);
 
-            setTimeout(() => {
-                message.remove();
-            }, 5000);
+            if (type !== 'info') {
+                setTimeout(() => {
+                    message.remove();
+                }, 5000);
+            }
         }
     </script>
 </body>
