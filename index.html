@@ -3,512 +3,659 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CreatorAI - Gerador de Imagens com IA</title>
-    <script src="https://js.puter.com/v2/"></script>
+    <meta name="description" content="CreatorAI Studio: gere imagens grátis por API pública e vídeos WebM no navegador, sem créditos do Puter por padrão.">
+    <title>CreatorAI Studio - Imagens e Vídeos com IA</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        :root {
+            --bg: #060712;
+            --panel: rgba(15, 23, 42, 0.78);
+            --panel-strong: rgba(15, 23, 42, 0.94);
+            --line: rgba(148, 163, 184, 0.18);
+            --text: #f8fafc;
+            --muted: #a6b3c6;
+            --primary: #8b5cf6;
+            --secondary: #ec4899;
+            --accent: #22d3ee;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --radius: 24px;
+            --shadow: 0 24px 80px rgba(0, 0, 0, 0.45);
         }
 
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #2d1b69 100%);
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            color: #fff;
+            font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            color: var(--text);
+            background:
+                radial-gradient(circle at 12% 18%, rgba(139, 92, 246, 0.34), transparent 34rem),
+                radial-gradient(circle at 88% 10%, rgba(34, 211, 238, 0.18), transparent 28rem),
+                radial-gradient(circle at 70% 85%, rgba(236, 72, 153, 0.2), transparent 34rem),
+                var(--bg);
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            background-image: linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
+            background-size: 48px 48px;
+            mask-image: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent 82%);
         }
 
         header {
-            background: rgba(15, 23, 42, 0.8);
-            border-bottom: 1px solid rgba(139, 92, 246, 0.3);
-            padding: 1.5rem;
-            backdrop-filter: blur(10px);
             position: sticky;
             top: 0;
-            z-index: 100;
+            z-index: 20;
+            border-bottom: 1px solid var(--line);
+            background: rgba(6, 7, 18, 0.72);
+            backdrop-filter: blur(18px);
         }
 
-        .header-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
+        .nav, main, footer { width: min(1180px, calc(100% - 32px)); margin: 0 auto; }
+        .nav { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 1rem 0; }
+        .brand { display: flex; align-items: center; gap: 0.85rem; }
+        .logo { width: 48px; height: 48px; display: grid; place-items: center; border-radius: 16px; background: linear-gradient(135deg, var(--primary), var(--secondary)); box-shadow: 0 14px 35px rgba(139, 92, 246, 0.42); font-size: 1.4rem; }
+        .brand h1 { font-size: 1.1rem; letter-spacing: -0.02em; }
+        .brand p { color: var(--muted); font-size: 0.82rem; }
+        .status-pill { display: inline-flex; align-items: center; gap: 0.45rem; padding: 0.58rem 0.85rem; border: 1px solid var(--line); border-radius: 999px; color: #dbeafe; background: rgba(15, 23, 42, 0.68); font-size: 0.85rem; }
+        .dot { width: 0.55rem; height: 0.55rem; border-radius: 999px; background: var(--success); box-shadow: 0 0 18px var(--success); }
+
+        main { padding: 3.25rem 0 2rem; }
+        .hero { display: grid; grid-template-columns: 1.05fr 0.95fr; align-items: center; gap: 2rem; margin-bottom: 2rem; }
+        .eyebrow { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.45rem 0.75rem; border: 1px solid rgba(34, 211, 238, 0.24); border-radius: 999px; color: #a5f3fc; background: rgba(8, 145, 178, 0.12); font-size: 0.86rem; margin-bottom: 1rem; }
+        .hero h2 { max-width: 780px; font-size: clamp(2.4rem, 8vw, 5.8rem); line-height: 0.92; letter-spacing: -0.07em; }
+        .gradient-text { background: linear-gradient(100deg, #fff, #c4b5fd 34%, #f9a8d4 65%, #67e8f9); -webkit-background-clip: text; background-clip: text; color: transparent; }
+        .hero p { color: var(--muted); font-size: 1.08rem; line-height: 1.75; margin-top: 1.25rem; max-width: 680px; }
+        .hero-card { border: 1px solid var(--line); border-radius: var(--radius); background: linear-gradient(145deg, rgba(15, 23, 42, 0.82), rgba(88, 28, 135, 0.26)); padding: 1.2rem; box-shadow: var(--shadow); }
+        .preview-frame { min-height: 330px; border-radius: 20px; overflow: hidden; position: relative; background: linear-gradient(135deg, rgba(139,92,246,.5), rgba(34,211,238,.18)), url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 900 700'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' x2='1' y1='0' y2='1'%3E%3Cstop stop-color='%238b5cf6'/%3E%3Cstop offset='.55' stop-color='%23ec4899'/%3E%3Cstop offset='1' stop-color='%2322d3ee'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='900' height='700' fill='%230f172a'/%3E%3Ccircle cx='690' cy='160' r='210' fill='url(%23g)' opacity='.55'/%3E%3Cpath d='M0 580 C160 430 270 500 390 390 C520 270 660 420 900 250 V700 H0Z' fill='%23ffffff' opacity='.13'/%3E%3Cpath d='M0 630 C180 520 330 560 470 460 C620 350 720 490 900 360 V700 H0Z' fill='%23ffffff' opacity='.2'/%3E%3C/svg%3E") center/cover; }
+        .floating-chip { position: absolute; left: 1rem; bottom: 1rem; right: 1rem; padding: 1rem; border: 1px solid rgba(255,255,255,.16); border-radius: 18px; background: rgba(2, 6, 23, 0.62); backdrop-filter: blur(14px); color: #e0f2fe; }
+
+        .grid { display: grid; grid-template-columns: 0.92fr 1.08fr; gap: 1.25rem; align-items: start; }
+        .card { border: 1px solid var(--line); border-radius: var(--radius); background: var(--panel); box-shadow: var(--shadow); backdrop-filter: blur(18px); }
+        .creator-panel { padding: 1.25rem; position: sticky; top: 96px; }
+        .panel-title { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1rem; }
+        .panel-title h3 { font-size: 1.15rem; }
+        .tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; margin-bottom: 1rem; }
+        .tab { border: 1px solid var(--line); background: rgba(30, 41, 59, 0.58); color: var(--muted); border-radius: 16px; padding: 0.85rem; cursor: pointer; font-weight: 800; transition: 0.2s ease; }
+        .tab.active { color: #fff; border-color: rgba(139, 92, 246, 0.8); background: linear-gradient(135deg, rgba(139,92,246,.88), rgba(236,72,153,.78)); }
+        label { display: block; margin: 1rem 0 0.55rem; color: #e2e8f0; font-weight: 750; font-size: 0.92rem; }
+        textarea, select, input { width: 100%; border: 1px solid var(--line); border-radius: 16px; color: #fff; background: rgba(2, 6, 23, 0.48); padding: 0.95rem 1rem; font: inherit; outline: none; transition: border 0.2s ease, box-shadow 0.2s ease; }
+        textarea { min-height: 142px; resize: vertical; line-height: 1.55; }
+        textarea:focus, select:focus, input:focus { border-color: rgba(34, 211, 238, 0.72); box-shadow: 0 0 0 4px rgba(34, 211, 238, 0.1); }
+        option { background: #0f172a; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.85rem; }
+        .hint { margin-top: 0.58rem; color: var(--muted); font-size: 0.84rem; line-height: 1.55; }
+        .actions { display: grid; gap: 0.75rem; margin-top: 1.2rem; }
+        .btn { border: 0; border-radius: 16px; padding: 0.98rem 1rem; color: #fff; font-weight: 900; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 0.55rem; transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease; text-decoration: none; }
+        .btn:hover:not(:disabled) { transform: translateY(-2px); }
+        .btn:disabled { opacity: .58; cursor: not-allowed; }
+        .btn-primary { background: linear-gradient(135deg, var(--primary), var(--secondary)); box-shadow: 0 18px 42px rgba(139, 92, 246, 0.34); }
+        .btn-secondary { background: rgba(51, 65, 85, 0.72); border: 1px solid var(--line); }
+        .btn-success { background: linear-gradient(135deg, var(--success), #059669); }
+        .spinner { width: 1.15rem; height: 1.15rem; border: 3px solid rgba(255,255,255,.28); border-top-color: #fff; border-radius: 50%; animation: spin .8s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .output-panel { min-height: 680px; overflow: hidden; }
+        .output-header { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 1.2rem; border-bottom: 1px solid var(--line); background: var(--panel-strong); }
+        .badge { display: inline-flex; align-items: center; gap: .45rem; padding: .48rem .7rem; border-radius: 999px; background: rgba(139, 92, 246, 0.16); color: #ddd6fe; border: 1px solid rgba(139, 92, 246, 0.28); font-size: .82rem; font-weight: 850; }
+        .message { margin: 1rem 1.2rem 0; padding: 0.9rem 1rem; border-radius: 16px; border: 1px solid var(--line); color: var(--muted); line-height: 1.5; }
+        .message.success { border-color: rgba(16,185,129,.45); background: rgba(16,185,129,.12); color: #a7f3d0; }
+        .message.error { border-color: rgba(239,68,68,.45); background: rgba(239,68,68,.12); color: #fecaca; }
+        .message.info { border-color: rgba(59,130,246,.45); background: rgba(59,130,246,.12); color: #bfdbfe; }
+        .canvas { margin: 1.2rem; min-height: 430px; display: grid; place-items: center; border: 1px dashed rgba(148, 163, 184, 0.32); border-radius: 22px; background: rgba(2, 6, 23, 0.38); overflow: hidden; }
+        .canvas img, .canvas video { max-width: 100%; max-height: 620px; border-radius: 18px; display: block; }
+        .empty { text-align: center; padding: 2rem; color: var(--muted); }
+        .empty .icon { font-size: 3.2rem; margin-bottom: 0.75rem; }
+        .meta { display: none; margin: 0 1.2rem 1.2rem; gap: .8rem; }
+        .meta.show { display: grid; }
+        .prompt-box { padding: 1rem; border-radius: 16px; background: rgba(30,41,59,.54); border-left: 4px solid var(--primary); color: #dbeafe; line-height: 1.6; }
+        .download-row { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; }
+        .history { padding: 0 1.2rem 1.2rem; }
+        .history h4 { margin-bottom: .75rem; color: #e2e8f0; }
+        .history-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(112px, 1fr)); gap: .7rem; }
+        .history-item { min-height: 92px; border: 1px solid var(--line); border-radius: 16px; background: rgba(15,23,42,.64); overflow: hidden; cursor: pointer; color: var(--muted); display: grid; place-items: center; text-align: center; font-size: .78rem; }
+        .history-item img, .history-item video { width: 100%; height: 100%; object-fit: cover; }
+        .features { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 1.25rem 0 2rem; }
+        .feature { padding: 1rem; border: 1px solid var(--line); border-radius: 20px; background: rgba(15,23,42,.52); color: var(--muted); line-height: 1.55; }
+        .feature strong { display: block; color: #fff; margin-bottom: .35rem; }
+        footer { padding: 1.6rem 0 2.4rem; color: var(--muted); text-align: center; }
+        .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+
+        @media (max-width: 920px) {
+            .hero, .grid { grid-template-columns: 1fr; }
+            .creator-panel { position: static; }
+            .features { grid-template-columns: 1fr; }
         }
-
-        .logo {
-            width: 50px;
-            height: 50px;
-            background: linear-gradient(135deg, #a855f7 0%, #ec4899 100%);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            font-weight: bold;
-        }
-
-        .header-text h1 {
-            font-size: 1.5rem;
-            background: linear-gradient(90deg, #a855f7 0%, #ec4899 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .header-text p {
-            font-size: 0.75rem;
-            color: #94a3b8;
-        }
-
-        main {
-            flex: 1;
-            padding: 2rem;
-        }
-
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-        }
-
-        .hero {
-            text-align: center;
-            margin-bottom: 3rem;
-        }
-
-        .hero h2 {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-            background: linear-gradient(90deg, #fff 0%, #a855f7 50%, #ec4899 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .hero p {
-            font-size: 1.1rem;
-            color: #cbd5e1;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        .card {
-            background: rgba(30, 27, 75, 0.6);
-            border: 1px solid rgba(139, 92, 246, 0.3);
-            border-radius: 16px;
-            padding: 2rem;
-            backdrop-filter: blur(10px);
-            margin-bottom: 2rem;
-        }
-
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        label {
-            display: block;
-            font-size: 0.95rem;
-            font-weight: 600;
-            color: #e2e8f0;
-            margin-bottom: 0.75rem;
-        }
-
-        input[type="text"],
-        textarea,
-        select {
-            width: 100%;
-            padding: 0.75rem;
-            background: rgba(51, 65, 85, 0.5);
-            border: 1px solid rgba(139, 92, 246, 0.3);
-            border-radius: 8px;
-            color: #fff;
-            font-family: inherit;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-        }
-
-        input[type="text"]:focus,
-        textarea:focus,
-        select:focus {
-            outline: none;
-            background: rgba(51, 65, 85, 0.8);
-            border-color: #a855f7;
-            box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.1);
-        }
-
-        select {
-            cursor: pointer;
-        }
-
-        select option {
-            background: #1e293b;
-            color: #fff;
-        }
-
-        textarea {
-            resize: vertical;
-            min-height: 80px;
-        }
-
-        .btn-generate {
-            width: 100%;
-            padding: 1rem;
-            background: linear-gradient(135deg, #a855f7 0%, #ec4899 100%);
-            border: none;
-            border-radius: 8px;
-            color: #fff;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-        }
-
-        .btn-generate:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(168, 85, 247, 0.4);
-        }
-
-        .btn-generate:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .spinner {
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(255, 255, 255, 0.3);
-            border-top-color: #fff;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        .result-container {
-            display: none;
-            margin-top: 2rem;
-        }
-
-        .result-container.show {
-            display: block;
-            animation: slideIn 0.3s ease;
-        }
-
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .result-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-        }
-
-        .result-header h3 {
-            font-size: 1.3rem;
-        }
-
-        .badge {
-            background: linear-gradient(135deg, #a855f7 0%, #ec4899 100%);
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 600;
-        }
-
-        .media-container {
-            background: rgba(15, 23, 42, 0.8);
-            border: 1px solid rgba(139, 92, 246, 0.3);
-            border-radius: 12px;
-            padding: 1rem;
-            margin-bottom: 1rem;
-            max-height: 600px;
-            overflow: auto;
-            text-align: center;
-        }
-
-        .media-container img {
-            max-width: 100%;
-            max-height: 500px;
-            border-radius: 8px;
-            display: inline-block;
-        }
-
-        .prompt-display {
-            background: rgba(51, 65, 85, 0.5);
-            padding: 1rem;
-            border-radius: 8px;
-            margin-bottom: 1rem;
-            border-left: 3px solid #a855f7;
-        }
-
-        .prompt-display strong {
-            color: #a855f7;
-        }
-
-        .btn-download {
-            width: 100%;
-            padding: 0.75rem;
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            border: none;
-            border-radius: 8px;
-            color: #fff;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-        }
-
-        .btn-download:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(16, 185, 129, 0.4);
-        }
-
-        .message {
-            padding: 1rem;
-            border-radius: 8px;
-            margin-bottom: 1rem;
-            font-weight: 500;
-        }
-
-        .message.success {
-            background: rgba(16, 185, 129, 0.2);
-            border: 1px solid #10b981;
-            color: #6ee7b7;
-        }
-
-        .message.error {
-            background: rgba(239, 68, 68, 0.2);
-            border: 1px solid #ef4444;
-            color: #fca5a5;
-        }
-
-        .message.info {
-            background: rgba(59, 130, 246, 0.2);
-            border: 1px solid #3b82f6;
-            color: #93c5fd;
-        }
-
-        footer {
-            background: rgba(15, 23, 42, 0.8);
-            border-top: 1px solid rgba(139, 92, 246, 0.3);
-            padding: 1.5rem;
-            text-align: center;
-            color: #94a3b8;
-            font-size: 0.9rem;
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 2rem;
-            color: #94a3b8;
-        }
-
-        .empty-state-icon {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-        }
-
-        @media (max-width: 768px) {
-            .hero h2 {
-                font-size: 2rem;
-            }
-
-            .card {
-                padding: 1.5rem;
-            }
+        @media (max-width: 620px) {
+            .nav { align-items: flex-start; flex-direction: column; }
+            .form-row, .download-row { grid-template-columns: 1fr; }
+            main { padding-top: 2rem; }
         }
     </style>
 </head>
 <body>
     <header>
-        <div class="header-content">
-            <div class="logo">✨</div>
-            <div class="header-text">
-                <h1>CreatorAI</h1>
-                <p>Gerador de Imagens com IA Real</p>
+        <nav class="nav" aria-label="Navegação principal">
+            <div class="brand">
+                <div class="logo" aria-hidden="true">✦</div>
+                <div>
+                    <h1>CreatorAI Studio</h1>
+                    <p>Imagens grátis e vídeos no navegador</p>
+                </div>
             </div>
-        </div>
+            <div class="status-pill"><span class="dot" aria-hidden="true"></span><span id="freeStatus">Modo 100% grátis carregando...</span></div>
+        </nav>
     </header>
 
     <main>
-        <div class="container">
-            <div class="hero">
-                <h2>Crie com <span style="color: #a855f7;">IA</span></h2>
-                <p>Gere imagens incríveis apenas descrevendo o que você quer. Powered by Puter.js com modelos reais de IA.</p>
+        <section class="hero" aria-labelledby="hero-title">
+            <div>
+                <span class="eyebrow">🚀 Estúdio profissional sem backend</span>
+                <h2 id="hero-title"><span class="gradient-text">Crie artes e vídeos</span> prontos para postar.</h2>
+                <p>Digite uma ideia, escolha imagem ou vídeo e o app gera sem depender de créditos do Puter: imagens por endpoint público gratuito e vídeos WebM animados localmente no navegador.</p>
             </div>
+            <div class="hero-card" aria-hidden="true">
+                <div class="preview-frame">
+                    <div class="floating-chip">Prompt exemplo: “Um anúncio cinematográfico de tênis futurista, luz neon, 4K, ultra realista”.</div>
+                </div>
+            </div>
+        </section>
 
-            <div class="card">
-                <div class="form-group">
-                    <label for="prompt">O que você quer criar?</label>
-                    <textarea 
-                        id="prompt" 
-                        placeholder="Ex: Um gato fofo voando entre nuvens, estilo fantasia, cores vibrantes"
-                    ></textarea>
+        <section class="features" aria-label="Recursos">
+            <div class="feature"><strong>🖼️ Imagem grátis</strong>Geração por URL pública sem login por padrão, com proporção, seed, estilo e prompt negativo.</div>
+            <div class="feature"><strong>🎬 Vídeo grátis</strong>Cria vídeo WebM local animando a imagem gerada, sem consumir créditos de vídeo.</div>
+            <div class="feature"><strong>⬇️ Download e histórico</strong>Baixe PNG/WebM quando o navegador permitir e recupere criações recentes nesta sessão.</div>
+        </section>
+
+        <section class="grid" aria-label="Criador e resultado">
+            <form class="card creator-panel" id="creatorForm">
+                <div class="panel-title">
+                    <h3>Configurar criação</h3>
+                    <span class="badge" id="modeBadge">🖼️ Imagem</span>
                 </div>
 
-                <div class="form-group">
-                    <label for="model">Modelo de IA</label>
-                    <select id="model">
-                        <option value="openai/gpt-image-2">GPT Image 2 (Recomendado)</option>
-                        <option value="black-forest-labs/flux-2-pro">FLUX.2 Pro</option>
-                        <option value="google/gemini-3-pro-image-preview">Gemini 3 Pro</option>
-                        <option value="stabilityai/stable-diffusion-3-medium">Stable Diffusion 3</option>
-                        <option value="x-ai/grok-imagine-image">Grok Imagine</option>
-                    </select>
+                <div class="tabs" role="tablist" aria-label="Tipo de mídia">
+                    <button class="tab active" type="button" id="imageTab" data-mode="image" role="tab" aria-selected="true">🖼️ Imagem</button>
+                    <button class="tab" type="button" id="videoTab" data-mode="video" role="tab" aria-selected="false">🎬 Vídeo</button>
                 </div>
 
-                <button class="btn-generate" id="generateBtn">
-                    <span>✨</span>
-                    <span>Gerar Imagem</span>
-                </button>
-            </div>
+                <label for="prompt">Prompt principal</label>
+                <textarea id="prompt" required maxlength="1200" placeholder="Ex: Uma cafeteria cyberpunk no centro de São Paulo, chuva, reflexos neon, composição cinematográfica"></textarea>
+                <p class="hint">Seja específico: assunto, estilo, iluminação, câmera, cores e uso final.</p>
 
-            <div class="result-container" id="resultContainer">
+                <label for="negativePrompt">Prompt negativo (opcional)</label>
+                <input id="negativePrompt" type="text" placeholder="Ex: baixa resolução, texto distorcido, mãos deformadas">
+
+                <div class="form-row">
+                    <div>
+                        <label for="model">Modelo</label>
+                        <select id="model"></select>
+                    </div>
+                    <div>
+                        <label for="quality">Qualidade</label>
+                        <select id="quality">
+                            <option value="low">Rápida</option>
+                            <option value="medium" selected>Equilibrada</option>
+                            <option value="high">Alta</option>
+                            <option value="auto">Auto</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div>
+                        <label for="ratio">Proporção</label>
+                        <select id="ratio">
+                            <option value="1:1">1:1 Feed</option>
+                            <option value="16:9" selected>16:9 YouTube</option>
+                            <option value="9:16">9:16 Reels/TikTok</option>
+                            <option value="4:5">4:5 Instagram</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="duration">Duração do vídeo</label>
+                        <select id="duration">
+                            <option value="4">4 segundos</option>
+                            <option value="6" selected>6 segundos</option>
+                            <option value="8">8 segundos</option>
+                        </select>
+                    </div>
+                </div>
+
+                <label><input id="localFallback" type="checkbox" style="width:auto; margin-right:.45rem;" checked> Fallback local automático</label>
+                <p class="hint">Não usa Puter, login, créditos ou chave de API. Se o gerador público estiver instável, o app cria uma arte local no navegador para nunca travar o fluxo.</p>
+
+                <div class="actions">
+                    <button class="btn btn-primary" id="generateBtn" type="submit"><span>✨</span><span>Gerar agora</span></button>
+                    <button class="btn btn-secondary" id="surpriseBtn" type="button">🎲 Prompt profissional</button>
+                </div>
+            </form>
+
+            <section class="card output-panel" aria-live="polite">
+                <div class="output-header">
+                    <div>
+                        <h3>Resultado</h3>
+                        <p class="hint" style="margin: .25rem 0 0;">Prévia, download e histórico da sessão.</p>
+                    </div>
+                    <span class="badge" id="resultBadge">Aguardando</span>
+                </div>
                 <div id="messageContainer"></div>
-                <div class="result-header">
-                    <h3>Sua Imagem Gerada</h3>
-                    <span class="badge">🖼️ Imagem</span>
+                <div class="canvas" id="mediaContainer">
+                    <div class="empty"><div class="icon">✨</div><strong>Seu resultado aparecerá aqui</strong><p>Preencha o prompt e clique em gerar.</p></div>
                 </div>
-                <div class="prompt-display">
-                    <strong>Prompt:</strong> <span id="promptDisplay"></span>
+                <div class="meta" id="metaPanel">
+                    <div class="prompt-box"><strong>Prompt:</strong> <span id="promptDisplay"></span></div>
+                    <div class="download-row">
+                        <button class="btn btn-success" id="downloadBtn" type="button">⬇️ Baixar resultado</button>
+                        <button class="btn btn-secondary" id="copyPromptBtn" type="button">📋 Copiar prompt</button>
+                    </div>
                 </div>
-                <div class="media-container" id="mediaContainer"></div>
-                <button class="btn-download" id="downloadBtn">
-                    <span>⬇️</span>
-                    <span>Download Imagem</span>
-                </button>
-            </div>
-
-            <div class="empty-state" id="emptyState">
-                <div class="empty-state-icon">✨</div>
-                <p>Comece digitando um prompt acima para gerar sua primeira imagem com IA real</p>
-            </div>
-        </div>
+                <div class="history">
+                    <h4>Histórico local</h4>
+                    <div class="history-grid" id="historyGrid"><div class="history-item">Sem criações ainda</div></div>
+                </div>
+            </section>
+        </section>
     </main>
 
     <footer>
-        <p>CreatorAI • Powered by Puter.js com GPT-4, FLUX, Gemini e Stable Diffusion</p>
+        <p>CreatorAI Studio • GitHub Pages • Modo grátis sem backend e sem chave de API exposta.</p>
     </footer>
 
     <script>
-        let currentImageElement = null;
-        let currentPrompt = '';
+        const imageModels = [
+            { value: 'flux', label: 'Flux grátis' },
+            { value: 'turbo', label: 'Turbo rápido' }
+        ];
+        const videoModels = [
+            { value: 'local-ken-burns', label: 'Vídeo local grátis' },
+            { value: 'local-product', label: 'Vídeo produto/social grátis' }
+        ];
+        const promptIdeas = [
+            'Produto premium de skincare sobre pedra molhada, macro, iluminação de estúdio, reflexos elegantes, fundo azul profundo, anúncio editorial',
+            'Robô simpático preparando café em uma cozinha futurista brasileira, estilo cinema, luz dourada da manhã, ultra detalhado',
+            'Clipe vertical de uma nave sobrevoando uma metrópole neon em noite chuvosa, câmera drone, atmosfera cyberpunk, movimento suave',
+            'Retrato profissional de uma criadora de conteúdo em estúdio minimalista, luz lateral, lente 85mm, cores sofisticadas, alta moda'
+        ];
 
-        // Generate button
-        document.getElementById('generateBtn').addEventListener('click', generateImage);
+        const state = { mode: 'image', currentUrl: '', currentType: '', currentPrompt: '', history: [] };
+        const $ = (id) => document.getElementById(id);
 
-        // Download button
-        document.getElementById('downloadBtn').addEventListener('click', downloadImage);
+        window.addEventListener('load', () => {
+            $('freeStatus').textContent = 'Modo 100% grátis pronto';
+            setMode('image');
+        });
 
-        async function generateImage() {
-            const prompt = document.getElementById('prompt').value.trim();
-            const model = document.getElementById('model').value;
-            
-            if (!prompt) {
-                showMessage('Por favor, digite um prompt', 'error');
-                return;
-            }
+        $('creatorForm').addEventListener('submit', (event) => {
+            event.preventDefault();
+            generate();
+        });
+        $('surpriseBtn').addEventListener('click', () => {
+            $('prompt').value = promptIdeas[Math.floor(Math.random() * promptIdeas.length)];
+            $('prompt').focus();
+        });
+        $('downloadBtn').addEventListener('click', downloadCurrent);
+        $('copyPromptBtn').addEventListener('click', async () => {
+            await navigator.clipboard.writeText(state.currentPrompt);
+            showMessage('Prompt copiado para a área de transferência.', 'success');
+        });
+        document.querySelectorAll('.tab').forEach((tab) => tab.addEventListener('click', () => setMode(tab.dataset.mode)));
 
-            const btn = document.getElementById('generateBtn');
-            btn.disabled = true;
-            btn.innerHTML = '<div class="spinner"></div><span>Gerando imagem...</span>';
+        function setMode(mode) {
+            state.mode = mode;
+            document.querySelectorAll('.tab').forEach((tab) => {
+                const active = tab.dataset.mode === mode;
+                tab.classList.toggle('active', active);
+                tab.setAttribute('aria-selected', String(active));
+            });
+            $('modeBadge').textContent = mode === 'image' ? '🖼️ Imagem' : '🎬 Vídeo';
+            $('duration').disabled = mode === 'image';
+            $('quality').disabled = false;
+            $('localFallback').checked = true;
+            populateModels();
+        }
 
+        function populateModels() {
+            const list = state.mode === 'image' ? imageModels : videoModels;
+            $('model').innerHTML = list.map((model) => `<option value="${model.value}">${model.label}</option>`).join('');
+        }
+
+        async function generate() {
+            const prompt = $('prompt').value.trim();
+            if (!prompt) return showMessage('Digite um prompt antes de gerar.', 'error');
+
+            setLoading(true);
+            clearMessage();
             try {
-                showMessage('⏳ Gerando sua imagem com IA... Isso pode levar alguns segundos.', 'info');
-                
-                // Usar Puter.js para gerar imagem real
-                const imageElement = await puter.ai.txt2img(prompt, { 
-                    model: model,
-                    quality: 'high'
-                });
+                const ratio = parseRatio($('ratio').value);
+                const negative = $('negativePrompt').value.trim();
+                const fullPrompt = enhancePrompt(prompt, negative);
+                showMessage(state.mode === 'image' ? 'Tentando gerador grátis; se falhar, uso arte local...' : 'Montando vídeo grátis localmente no navegador...', 'info');
 
-                // Armazenar a imagem gerada
-                currentImageElement = imageElement;
-                currentPrompt = prompt;
+                const image = state.mode === 'image'
+                    ? await generateResilientImage(fullPrompt, ratio)
+                    : await generateLocalArtwork(fullPrompt, ratio);
+                const media = state.mode === 'image'
+                    ? image
+                    : await createAnimatedVideo(image, Number($('duration').value), ratio, $('model').value);
 
-                // Exibir resultado
-                displayResult();
-                showMessage(`✅ Imagem gerada com sucesso usando ${model}!`, 'success');
-
+                renderMedia(media, prompt, state.mode);
+                showMessage(`${state.mode === 'image' ? 'Imagem' : 'Vídeo'} criado sem Puter, sem login e sem créditos.`, 'success');
             } catch (error) {
-                console.error('Erro:', error);
-                showMessage('❌ Erro ao gerar imagem: ' + (error.message || 'Tente novamente'), 'error');
+                console.error(error);
+                if ($('localFallback').checked) {
+                    const fallbackImage = await generateLocalArtwork(fullPrompt || prompt, ratio);
+                    const fallbackMedia = state.mode === 'image' ? fallbackImage : await createAnimatedVideo(fallbackImage, Number($('duration').value), ratio, $('model').value);
+                    renderMedia(fallbackMedia, prompt, state.mode);
+                    showMessage('O serviço externo falhou, então gerei localmente no navegador sem créditos.', 'success');
+                } else {
+                    showMessage(`Não foi possível gerar agora: ${error.message || 'erro desconhecido'}. Ative o fallback local para gerar sem depender de servidor.`, 'error');
+                }
             } finally {
-                btn.disabled = false;
-                btn.innerHTML = '<span>✨</span><span>Gerar Imagem</span>';
+                setLoading(false);
             }
         }
 
-        function displayResult() {
-            const resultContainer = document.getElementById('resultContainer');
-            const emptyState = document.getElementById('emptyState');
-            const mediaContainer = document.getElementById('mediaContainer');
-            const promptDisplay = document.getElementById('promptDisplay');
-
-            promptDisplay.textContent = currentPrompt;
-
-            mediaContainer.innerHTML = '';
-            if (currentImageElement) {
-                mediaContainer.appendChild(currentImageElement.cloneNode(true));
-            }
-
-            emptyState.style.display = 'none';
-            resultContainer.classList.add('show');
+        function enhancePrompt(prompt, negative) {
+            const style = $('quality').value === 'high' ? 'high quality, detailed, professional, sharp focus' : 'clean composition, beautiful lighting';
+            return negative ? `${prompt}, ${style}. Negative prompt: ${negative}` : `${prompt}, ${style}`;
         }
 
-        function downloadImage() {
-            if (!currentImageElement) return;
+        function parseRatio(value) {
+            const [w, h] = value.split(':').map(Number);
+            return { w, h };
+        }
 
-            // Obter a imagem do elemento
-            const img = currentImageElement.querySelector('img') || currentImageElement;
-            
-            if (img && img.src) {
-                const link = document.createElement('a');
-                link.href = img.src;
-                link.download = `creatorai-${Date.now()}.png`;
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-                showMessage('✅ Download iniciado!', 'success');
-            } else {
-                showMessage('❌ Erro ao fazer download', 'error');
+        function dimensionsFromRatio(ratio) {
+            if (ratio.w === 9 && ratio.h === 16) return { width: 720, height: 1280 };
+            if (ratio.w === 4 && ratio.h === 5) return { width: 1024, height: 1280 };
+            if (ratio.w === 1 && ratio.h === 1) return { width: 1024, height: 1024 };
+            return { width: 1280, height: 720 };
+        }
+
+        async function generateResilientImage(prompt, ratio) {
+            const errors = [];
+            for (const url of buildFreeImageUrls(prompt, ratio)) {
+                try {
+                    return await loadImageWithTimeout(url, prompt, 35000);
+                } catch (error) {
+                    errors.push(error.message);
+                }
             }
+            if ($('localFallback').checked) return generateLocalArtwork(prompt, ratio);
+            throw new Error(errors.join('; ') || 'geradores gratuitos indisponíveis');
+        }
+
+        function buildFreeImageUrls(prompt, ratio) {
+            const { width, height } = dimensionsFromRatio(ratio);
+            const seed = Math.floor(Math.random() * 1_000_000_000);
+            const model = state.mode === 'image' ? $('model').value : 'flux';
+            const enhancedPrompt = encodeURIComponent(prompt);
+            const common = new URLSearchParams({ width, height, seed, model, nologo: 'true', safe: 'true' });
+            const turbo = new URLSearchParams({ width, height, seed, model: 'turbo', nologo: 'true', safe: 'true' });
+            return [
+                `https://image.pollinations.ai/prompt/${enhancedPrompt}?${common.toString()}&cb=${Date.now()}`,
+                `https://image.pollinations.ai/prompt/${enhancedPrompt}?${turbo.toString()}&cb=${Date.now() + 1}`
+            ];
+        }
+
+        function loadImageWithTimeout(url, alt, timeoutMs) {
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                const timer = setTimeout(() => {
+                    img.src = '';
+                    reject(new Error('tempo esgotado no gerador público'));
+                }, timeoutMs);
+                img.onload = () => {
+                    clearTimeout(timer);
+                    img.alt = alt;
+                    resolve(img);
+                };
+                img.onerror = () => {
+                    clearTimeout(timer);
+                    reject(new Error('gerador público não retornou imagem'));
+                };
+                img.referrerPolicy = 'no-referrer';
+                img.src = url;
+            });
+        }
+
+        async function generateLocalArtwork(prompt, ratio) {
+            const { width, height } = dimensionsFromRatio(ratio);
+            const canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            const seed = hashPrompt(prompt);
+            const palette = paletteFromSeed(seed);
+            drawLocalBackground(ctx, width, height, palette, seed);
+            drawLocalShapes(ctx, width, height, palette, seed);
+            drawLocalCaption(ctx, width, height, prompt);
+            const img = document.createElement('img');
+            img.src = canvas.toDataURL('image/png');
+            img.alt = prompt;
+            await img.decode?.().catch(() => {});
+            return img;
+        }
+
+        function hashPrompt(text) {
+            let hash = 2166136261;
+            for (const char of text) {
+                hash ^= char.charCodeAt(0);
+                hash = Math.imul(hash, 16777619);
+            }
+            return hash >>> 0;
+        }
+
+        function seededRandom(seed) {
+            let value = seed >>> 0;
+            return () => {
+                value += 0x6D2B79F5;
+                let t = value;
+                t = Math.imul(t ^ t >>> 15, t | 1);
+                t ^= t + Math.imul(t ^ t >>> 7, t | 61);
+                return ((t ^ t >>> 14) >>> 0) / 4294967296;
+            };
+        }
+
+        function paletteFromSeed(seed) {
+            const hue = seed % 360;
+            return [`hsl(${hue}, 92%, 58%)`, `hsl(${(hue + 62) % 360}, 88%, 54%)`, `hsl(${(hue + 150) % 360}, 92%, 62%)`, '#050816', '#ffffff'];
+        }
+
+        function drawLocalBackground(ctx, width, height, palette, seed) {
+            const gradient = ctx.createLinearGradient(0, 0, width, height);
+            gradient.addColorStop(0, palette[3]);
+            gradient.addColorStop(0.45, palette[0]);
+            gradient.addColorStop(1, palette[1]);
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, width, height);
+            const random = seededRandom(seed);
+            for (let i = 0; i < 120; i++) {
+                ctx.fillStyle = `rgba(255,255,255,${0.04 + random() * 0.13})`;
+                ctx.beginPath();
+                ctx.arc(random() * width, random() * height, 1 + random() * 4, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function drawLocalShapes(ctx, width, height, palette, seed) {
+            const random = seededRandom(seed + 99);
+            ctx.globalCompositeOperation = 'screen';
+            for (let i = 0; i < 14; i++) {
+                const x = random() * width;
+                const y = random() * height;
+                const radius = Math.min(width, height) * (0.08 + random() * 0.2);
+                const gradient = ctx.createRadialGradient(x, y, 0, x, y, radius);
+                gradient.addColorStop(0, `${palette[i % 3].replace('hsl', 'hsla').replace(')', ', 0.6)')}`);
+                gradient.addColorStop(1, 'rgba(255,255,255,0)');
+                ctx.fillStyle = gradient;
+                ctx.beginPath();
+                ctx.arc(x, y, radius, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            ctx.globalCompositeOperation = 'source-over';
+        }
+
+        function drawLocalCaption(ctx, width, height, prompt) {
+            ctx.fillStyle = 'rgba(2, 6, 23, 0.62)';
+            const boxHeight = Math.max(130, height * 0.18);
+            ctx.fillRect(0, height - boxHeight, width, boxHeight);
+            ctx.fillStyle = '#ffffff';
+            ctx.font = `800 ${Math.max(30, width * 0.036)}px system-ui`;
+            ctx.fillText('CreatorAI grátis', width * 0.055, height - boxHeight + 54);
+            ctx.fillStyle = 'rgba(255,255,255,0.78)';
+            ctx.font = `500 ${Math.max(18, width * 0.018)}px system-ui`;
+            wrapText(ctx, prompt.slice(0, 180), width * 0.055, height - boxHeight + 92, width * 0.86, Math.max(24, width * 0.025));
+        }
+
+        function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
+            const words = text.split(' ');
+            let line = '';
+            for (const word of words) {
+                const testLine = `${line}${word} `;
+                if (ctx.measureText(testLine).width > maxWidth && line) {
+                    ctx.fillText(line, x, y);
+                    line = `${word} `;
+                    y += lineHeight;
+                } else {
+                    line = testLine;
+                }
+            }
+            ctx.fillText(line.trim(), x, y);
+        }
+
+        function renderMedia(media, prompt, type) {
+            const node = normalizeMedia(media, type);
+            const container = $('mediaContainer');
+            container.innerHTML = '';
+            container.appendChild(node);
+            state.currentUrl = node.currentSrc || node.src;
+            state.currentType = type;
+            state.currentPrompt = prompt;
+            $('promptDisplay').textContent = prompt;
+            $('resultBadge').textContent = type === 'image' ? '🖼️ Imagem pronta' : '🎬 Vídeo pronto';
+            $('metaPanel').classList.add('show');
+            addToHistory(node, prompt, type);
+        }
+
+        function normalizeMedia(media, type) {
+            if (media instanceof HTMLImageElement || media instanceof HTMLVideoElement) {
+                media.controls = type === 'video';
+                media.autoplay = type === 'video';
+                media.loop = type === 'video';
+                media.muted = type === 'video';
+                return media;
+            }
+            if (typeof media === 'string') {
+                const element = document.createElement(type === 'video' ? 'video' : 'img');
+                element.src = media;
+                if (type === 'video') Object.assign(element, { controls: true, autoplay: true, loop: true, muted: true });
+                return element;
+            }
+            throw new Error('Formato de mídia não reconhecido pelo navegador.');
+        }
+
+        async function createAnimatedVideo(imageElement, duration, ratio, template) {
+            if (!window.MediaRecorder) throw new Error('seu navegador não suporta gravação local de vídeo');
+            const image = imageElement;
+            await image.decode?.().catch(() => {});
+            const { width, height } = dimensionsFromRatio(ratio);
+            const canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            const stream = canvas.captureStream(30);
+            const mimeType = MediaRecorder.isTypeSupported('video/webm;codecs=vp9') ? 'video/webm;codecs=vp9' : 'video/webm';
+            const recorder = new MediaRecorder(stream, { mimeType });
+            const chunks = [];
+            recorder.ondataavailable = (event) => event.data.size && chunks.push(event.data);
+            recorder.start();
+            const started = performance.now();
+
+            await new Promise((resolve) => {
+                function frame(now) {
+                    const progress = Math.min((now - started) / (duration * 1000), 1);
+                    const pan = template === 'local-product' ? Math.sin(progress * Math.PI * 2) * 24 : 0;
+                    const zoom = 1.05 + progress * 0.12;
+                    ctx.fillStyle = '#050816';
+                    ctx.fillRect(0, 0, width, height);
+                    drawCover(ctx, image, width, height, zoom, pan);
+                    drawVideoOverlay(ctx, width, height, progress, template);
+                    if (progress < 1) requestAnimationFrame(frame); else resolve();
+                }
+                requestAnimationFrame(frame);
+            });
+            recorder.stop();
+            await new Promise((resolve) => recorder.onstop = resolve);
+            const blob = new Blob(chunks, { type: 'video/webm' });
+            const video = document.createElement('video');
+            video.src = URL.createObjectURL(blob);
+            Object.assign(video, { controls: true, autoplay: true, loop: true, muted: true });
+            return video;
+        }
+
+        function drawCover(ctx, img, width, height, zoom, pan = 0) {
+            const baseRatio = Math.max(width / img.naturalWidth, height / img.naturalHeight) * zoom;
+            const drawWidth = img.naturalWidth * baseRatio;
+            const drawHeight = img.naturalHeight * baseRatio;
+            ctx.drawImage(img, (width - drawWidth) / 2 + pan, (height - drawHeight) / 2, drawWidth, drawHeight);
+        }
+
+        function drawVideoOverlay(ctx, width, height, progress, template) {
+            const gradient = ctx.createLinearGradient(0, height, width, 0);
+            gradient.addColorStop(0, 'rgba(6, 7, 18, 0.68)');
+            gradient.addColorStop(0.58, 'rgba(6, 7, 18, 0.08)');
+            gradient.addColorStop(1, 'rgba(236, 72, 153, 0.2)');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, width, height);
+            ctx.fillStyle = 'rgba(255,255,255,0.92)';
+            ctx.font = `800 ${Math.max(26, width * 0.035)}px system-ui`;
+            ctx.fillText(template === 'local-product' ? 'Criado com CreatorAI' : 'CreatorAI Studio', width * 0.055, height * 0.88);
+            ctx.fillStyle = 'rgba(34, 211, 238, 0.95)';
+            ctx.fillRect(width * 0.055, height * 0.9, width * 0.34 * progress, Math.max(5, height * 0.006));
+        }
+
+        function addToHistory(node, prompt, type) {
+            state.history.unshift({ url: node.currentSrc || node.src, prompt, type });
+            state.history = state.history.slice(0, 8);
+            $('historyGrid').innerHTML = state.history.map((item, index) => `
+                <button class="history-item" type="button" data-index="${index}" title="${escapeHtml(item.prompt)}">
+                    ${item.type === 'video' ? `<video src="${item.url}" muted></video>` : `<img src="${item.url}" alt="${escapeHtml(item.prompt)}">`}
+                </button>
+            `).join('');
+            document.querySelectorAll('.history-item[data-index]').forEach((item) => item.addEventListener('click', () => {
+                const saved = state.history[Number(item.dataset.index)];
+                renderMedia(saved.url, saved.prompt, saved.type);
+            }));
+        }
+
+        function downloadCurrent() {
+            if (!state.currentUrl) return showMessage('Nenhum resultado para baixar.', 'error');
+            const link = document.createElement('a');
+            link.href = state.currentUrl;
+            link.download = `creatorai-${state.currentType}-${Date.now()}.${state.currentType === 'video' ? 'webm' : 'png'}`;
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            showMessage('Download iniciado.', 'success');
         }
 
         function showMessage(text, type) {
-            const container = document.getElementById('messageContainer');
-            const message = document.createElement('div');
-            message.className = `message ${type}`;
-            message.textContent = text;
-            container.innerHTML = '';
-            container.appendChild(message);
-
-            if (type !== 'info') {
-                setTimeout(() => {
-                    message.remove();
-                }, 5000);
-            }
+            $('messageContainer').innerHTML = `<div class="message ${type}">${escapeHtml(text)}</div>`;
+        }
+        function clearMessage() { $('messageContainer').innerHTML = ''; }
+        function setLoading(isLoading) {
+            $('generateBtn').disabled = isLoading;
+            $('generateBtn').innerHTML = isLoading ? '<span class="spinner"></span><span>Gerando...</span>' : '<span>✨</span><span>Gerar agora</span>';
+        }
+        function escapeHtml(value) {
+            return String(value).replace(/[&<>"]/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[char]));
         }
     </script>
 </body>
