@@ -1,29 +1,38 @@
-# 🎨 CreatorAI - Gerador de Imagens e Vídeos
+# 🎨 CreatorAI Studio
 
-Um aplicativo web simples e moderno para gerar imagens e vídeos com IA.
+Aplicativo estático e responsivo para gerar **imagens** e **vídeos** com IA diretamente no navegador usando Puter.js.
 
-## 🚀 Como Usar
+## 🚀 Acesse
 
-1. Abra: https://gborges1441-tech.github.io/creator-ai/
-2. Digite um prompt descritivo
-3. Escolha "Imagem" ou "Vídeo"
-4. Clique em "Gerar"
-5. Baixe seu resultado
+- Produção: https://gborges1441-tech.github.io/creator-ai/
 
-## ✨ Características
+## ✨ Recursos
 
-- 🖼️ Geração de imagens
-- 🎬 Geração de vídeos
-- 💾 Download de resultados
-- 🎨 Interface moderna e responsiva
-- ⚡ Funciona no navegador
+- 🖼️ Geração de imagens com modelos compatíveis do Puter.js.
+- 🎬 Geração de vídeos com `puter.ai.txt2vid` quando disponível.
+- 🧪 Modo teste para validar o fluxo sem consumir créditos.
+- 🎛️ Controles de modelo, qualidade, proporção, duração e prompt negativo.
+- 💾 Download do resultado e histórico local da sessão.
+- 📱 Interface profissional, responsiva e pronta para GitHub Pages.
+- 🔐 Sem backend e sem chaves de API expostas no repositório.
 
-## 📝 Exemplos de Prompts
+> Observação: o Puter.js opera no modelo em que o usuário autentica/paga pelos próprios créditos em gerações reais. O app também oferece modo teste e fallback local para vídeo WebM animado quando a API de vídeo não estiver disponível no navegador.
 
-- "Um gato fofo dormindo em um sofá"
-- "Uma paisagem montanhosa ao amanhecer"
-- "Um drone sobrevoando uma cidade futurista"
+## 🧑‍💻 Como usar
+
+1. Abra o site.
+2. Escolha **Imagem** ou **Vídeo**.
+3. Digite um prompt detalhado.
+4. Ajuste modelo, qualidade, proporção e duração.
+5. Clique em **Gerar agora**.
+6. Baixe o resultado.
+
+## 📝 Exemplos de prompts
+
+- `Produto premium de skincare sobre pedra molhada, macro, iluminação de estúdio, reflexos elegantes, fundo azul profundo, anúncio editorial`
+- `Clipe vertical de uma nave sobrevoando uma metrópole neon em noite chuvosa, câmera drone, atmosfera cyberpunk, movimento suave`
+- `Retrato profissional de uma criadora de conteúdo em estúdio minimalista, luz lateral, lente 85mm, cores sofisticadas, alta moda`
 
 ---
 
-Desenvolvido com ❤️
+Desenvolvido para publicação simples via GitHub Pages.
