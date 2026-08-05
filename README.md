@@ -1,6 +1,6 @@
 # 🎨 CreatorAI Studio
 
-Aplicativo estático e responsivo para gerar **imagens grátis** e **vídeos WebM grátis** diretamente no navegador, sem depender de créditos do Puter. Se o serviço público de imagem falhar, o app usa fallback local para continuar funcionando.
+Aplicativo estático e responsivo para gerar **imagens grátis** e **vídeos WebM grátis** diretamente no navegador, sem depender de créditos do Puter. O padrão é um motor local premium que sempre gera; APIs públicas gratuitas ficam como opção extra.
 
 ## 🚀 Acesse
 
@@ -8,15 +8,15 @@ Aplicativo estático e responsivo para gerar **imagens grátis** e **vídeos Web
 
 ## ✨ Recursos
 
-- 🖼️ Geração de imagens por endpoint público gratuito, sem chave de API no app, com fallback local automático.
-- 🎬 Geração de vídeos WebM localmente no navegador, animando uma imagem grátis ou uma arte local.
+- 🖼️ Motor local premium por padrão, com opção de endpoint público gratuito sem chave de API.
+- 🎬 Geração de vídeos WebM localmente no navegador, sem API de vídeo, fila, créditos ou upgrade.
 - 🧪 Modo grátis ativado por padrão para evitar mensagens de créditos esgotados.
 - 🎛️ Controles de modelo grátis, qualidade, proporção, duração e prompt negativo.
 - 💾 Download do resultado e histórico local da sessão.
 - 📱 Interface profissional, responsiva e pronta para GitHub Pages.
 - 🔐 Sem backend e sem chaves de API expostas no repositório.
 
-> Importante: nenhum app estático consegue garantir IA externa realmente ilimitada se depender de infraestrutura de terceiros. Esta versão remove a dependência obrigatória de créditos do Puter, tenta geração pública gratuita para imagens e, se ela falhar, cria uma arte local no navegador para manter o fluxo de imagem/vídeo funcionando.
+> Importante: nenhum app estático consegue garantir IA externa realmente ilimitada se depender de infraestrutura de terceiros. Esta versão remove a dependência do Puter e deixa o motor local como padrão para sempre gerar; APIs públicas gratuitas são usadas apenas como bônus quando escolhidas/disponíveis.
 
 ## 🧑‍💻 Como usar
 

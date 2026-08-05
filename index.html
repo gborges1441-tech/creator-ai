@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <meta name="description" content="CreatorAI Studio: gere imagens grátis por API pública e vídeos WebM no navegador, sem créditos do Puter por padrão.">
     <title>CreatorAI Studio - Imagens e Vídeos com IA</title>
     <style>
@@ -167,8 +170,8 @@
         </section>
 
         <section class="features" aria-label="Recursos">
-            <div class="feature"><strong>🖼️ Imagem grátis</strong>Geração por URL pública sem login por padrão, com proporção, seed, estilo e prompt negativo.</div>
-            <div class="feature"><strong>🎬 Vídeo grátis</strong>Cria vídeo WebM local animando a imagem gerada, sem consumir créditos de vídeo.</div>
+            <div class="feature"><strong>🖼️ Imagem grátis</strong>Motor local premium por padrão e APIs públicas grátis como opção, com proporção, seed, estilo e prompt negativo.</div>
+            <div class="feature"><strong>🎬 Vídeo grátis</strong>Cria vídeos WebM premium no navegador, sem API de vídeo, sem fila e sem upgrade.</div>
             <div class="feature"><strong>⬇️ Download e histórico</strong>Baixe PNG/WebM quando o navegador permitir e recupere criações recentes nesta sessão.</div>
         </section>
 
@@ -228,7 +231,7 @@
                 </div>
 
                 <label><input id="localFallback" type="checkbox" style="width:auto; margin-right:.45rem;" checked> Fallback local automático</label>
-                <p class="hint">Não usa Puter, login, créditos ou chave de API. Se o gerador público estiver instável, o app cria uma arte local no navegador para nunca travar o fluxo.</p>
+                <p class="hint">Não usa Puter, login, créditos ou chave de API. O motor local é o padrão para sempre gerar; APIs públicas grátis ficam como bônus quando disponíveis.</p>
 
                 <div class="actions">
                     <button class="btn btn-primary" id="generateBtn" type="submit"><span>✨</span><span>Gerar agora</span></button>
@@ -269,8 +272,9 @@
 
     <script>
         const imageModels = [
-            { value: 'flux', label: 'Flux grátis' },
-            { value: 'turbo', label: 'Turbo rápido' }
+            { value: 'local-pro', label: 'Local Pro (sempre funciona)' },
+            { value: 'flux', label: 'API Flux grátis (opcional)' },
+            { value: 'turbo', label: 'API Turbo grátis (opcional)' }
         ];
         const videoModels = [
             { value: 'local-ken-burns', label: 'Vídeo local grátis' },
@@ -286,8 +290,20 @@
         const state = { mode: 'image', currentUrl: '', currentType: '', currentPrompt: '', history: [] };
         const $ = (id) => document.getElementById(id);
 
+        function hardDisableLegacyPuterArtifacts() {
+            document.querySelectorAll('script[src*="puter"], iframe[src*="puter"], [class*="puter"], [id*="puter"]').forEach((node) => node.remove());
+            document.querySelectorAll('button, div, span').forEach((node) => {
+                if (/upgrade now|low balance|puter\.js pronto/i.test(node.textContent || '')) {
+                    const dialog = node.closest('[role="dialog"], .modal, div') || node;
+                    dialog.remove();
+                }
+            });
+            navigator.serviceWorker?.getRegistrations?.().then((registrations) => registrations.forEach((registration) => registration.unregister())).catch(() => {});
+        }
+
         window.addEventListener('load', () => {
-            $('freeStatus').textContent = 'Modo 100% grátis pronto';
+            hardDisableLegacyPuterArtifacts();
+            $('freeStatus').textContent = 'Modo 100% grátis pronto • v3';
             setMode('image');
         });
 
@@ -335,7 +351,7 @@
                 const ratio = parseRatio($('ratio').value);
                 const negative = $('negativePrompt').value.trim();
                 const fullPrompt = enhancePrompt(prompt, negative);
-                showMessage(state.mode === 'image' ? 'Tentando gerador grátis; se falhar, uso arte local...' : 'Montando vídeo grátis localmente no navegador...', 'info');
+                showMessage(state.mode === 'image' ? 'Gerando no modo grátis sem créditos...' : 'Montando vídeo grátis localmente no navegador...', 'info');
 
                 const image = state.mode === 'image'
                     ? await generateResilientImage(fullPrompt, ratio)
@@ -379,6 +395,7 @@
         }
 
         async function generateResilientImage(prompt, ratio) {
+            if ($('model').value === 'local-pro') return generateLocalArtwork(prompt, ratio);
             const errors = [];
             for (const url of buildFreeImageUrls(prompt, ratio)) {
                 try {
@@ -394,7 +411,7 @@
         function buildFreeImageUrls(prompt, ratio) {
             const { width, height } = dimensionsFromRatio(ratio);
             const seed = Math.floor(Math.random() * 1_000_000_000);
-            const model = state.mode === 'image' ? $('model').value : 'flux';
+            const model = state.mode === 'image' && $('model').value !== 'local-pro' ? $('model').value : 'flux';
             const enhancedPrompt = encodeURIComponent(prompt);
             const common = new URLSearchParams({ width, height, seed, model, nologo: 'true', safe: 'true' });
             const turbo = new URLSearchParams({ width, height, seed, model: 'turbo', nologo: 'true', safe: 'true' });
