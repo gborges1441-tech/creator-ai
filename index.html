@@ -3,9 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="CreatorAI Studio - Geração Ilimitada de Imagens e Vídeos Profissionais com IA">
-    <title>CreatorAI Studio | Ultra Premium 3D</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <title>CreatorAI Studio | Elite Content Generator</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <style>
         * {
@@ -15,56 +13,92 @@
         }
 
         :root {
-            --bg-dark: #0a0e27;
-            --bg-darker: #050812;
-            --surface: #1a1f3a;
-            --surface-light: #252d4a;
-            --primary: #6366f1;
-            --primary-light: #818cf8;
-            --secondary: #a855f7;
-            --accent: #22d3ee;
-            --text: #f8fafc;
-            --text-muted: #cbd5e1;
-            --border: rgba(148, 163, 184, 0.12);
-            --glow: rgba(99, 102, 241, 0.5);
+            --primary: #0f172a;
+            --secondary: #1e293b;
+            --accent: #3b82f6;
+            --accent-light: #60a5fa;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --border: #334155;
         }
 
-        html, body {
-            width: 100%;
-            height: 100%;
-            font-family: 'Inter', sans-serif;
-            background: linear-gradient(135deg, var(--bg-darker) 0%, #1a1a3e 50%, var(--bg-darker) 100%);
-            color: var(--text);
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1a1f35 50%, #0f172a 100%);
+            color: var(--text-primary);
             overflow-x: hidden;
+            min-height: 100vh;
         }
 
-        #canvas3d {
+        /* Fundo Mesh Gradient Premium */
+        .mesh-background {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: 1;
+            z-index: 0;
+            pointer-events: none;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(59, 130, 246, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(139, 92, 246, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 40% 0%, rgba(34, 197, 94, 0.1) 0%, transparent 50%);
+            animation: gradientShift 15s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% {
+                background: 
+                    radial-gradient(circle at 20% 50%, rgba(59, 130, 246, 0.15) 0%, transparent 50%),
+                    radial-gradient(circle at 80% 80%, rgba(139, 92, 246, 0.15) 0%, transparent 50%),
+                    radial-gradient(circle at 40% 0%, rgba(34, 197, 94, 0.1) 0%, transparent 50%);
+            }
+            50% {
+                background: 
+                    radial-gradient(circle at 80% 20%, rgba(59, 130, 246, 0.15) 0%, transparent 50%),
+                    radial-gradient(circle at 20% 80%, rgba(139, 92, 246, 0.15) 0%, transparent 50%),
+                    radial-gradient(circle at 60% 100%, rgba(34, 197, 94, 0.1) 0%, transparent 50%);
+            }
         }
 
         .container {
             position: relative;
-            z-index: 10;
-            width: 100%;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
+            z-index: 1;
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            min-height: 100vh;
+            align-items: center;
         }
 
-        header {
-            padding: 2rem;
+        @media (max-width: 1024px) {
+            .container {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+        }
+
+        /* Header */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(10px);
             border-bottom: 1px solid var(--border);
-            backdrop-filter: blur(20px);
-            background: rgba(10, 14, 39, 0.4);
+            padding: 15px 20px;
         }
 
         .header-content {
-            max-width: 1400px;
+            max-width: 1600px;
             margin: 0 auto;
             display: flex;
             justify-content: space-between;
@@ -72,285 +106,258 @@
         }
 
         .logo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 1.5rem;
-            font-weight: 900;
-            background: linear-gradient(135deg, var(--primary), var(--secondary), var(--accent));
+            font-size: 24px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent) 0%, #8b5cf6 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
 
-        .status {
+        .status-badge {
             display: flex;
             align-items: center;
             gap: 8px;
-            padding: 8px 16px;
-            background: rgba(34, 211, 238, 0.1);
-            border: 1px solid rgba(34, 211, 238, 0.2);
-            border-radius: 100px;
-            font-size: 0.875rem;
-            color: var(--accent);
+            padding: 6px 12px;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid var(--success);
+            border-radius: 20px;
+            font-size: 12px;
+            color: var(--success);
         }
 
         .status-dot {
             width: 8px;
             height: 8px;
-            background: var(--accent);
+            background: var(--success);
             border-radius: 50%;
             animation: pulse 2s infinite;
         }
 
         @keyframes pulse {
-            0%, 100% { opacity: 0.4; }
-            50% { opacity: 1; }
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
         }
 
-        main {
-            flex: 1;
-            display: flex;
-            overflow: hidden;
+        .container {
+            margin-top: 80px;
         }
 
-        .main-grid {
-            display: grid;
-            grid-template-columns: 420px 1fr;
-            gap: 2rem;
-            width: 100%;
-            padding: 2rem;
-            max-width: 1400px;
-            margin: 0 auto;
-            overflow-y: auto;
-        }
-
-        .sidebar {
+        /* Panel Esquerdo */
+        .control-panel {
             display: flex;
             flex-direction: column;
-            gap: 1.5rem;
+            gap: 20px;
         }
 
-        .card {
-            background: rgba(26, 31, 58, 0.6);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            padding: 2rem;
+        .panel-section {
+            background: rgba(30, 41, 59, 0.6);
             backdrop-filter: blur(10px);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            transition: all 0.3s ease;
-        }
-
-        .card:hover {
-            border-color: rgba(99, 102, 241, 0.3);
-            box-shadow: 0 12px 48px rgba(99, 102, 241, 0.2);
-        }
-
-        .card-title {
-            font-size: 1.25rem;
-            font-weight: 700;
-            margin-bottom: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .tabs {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 8px;
-            margin-bottom: 1.5rem;
-        }
-
-        .tab {
-            padding: 12px;
-            background: rgba(37, 45, 74, 0.5);
             border: 1px solid var(--border);
-            border-radius: 12px;
-            color: var(--text-muted);
-            font-weight: 600;
-            cursor: pointer;
+            border-radius: 16px;
+            padding: 24px;
             transition: all 0.3s ease;
         }
 
-        .tab.active {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            border-color: transparent;
-            color: white;
-            box-shadow: 0 8px 24px var(--glow);
+        .panel-section:hover {
+            border-color: var(--accent);
+            background: rgba(30, 41, 59, 0.8);
         }
 
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        label {
-            display: block;
-            font-size: 0.875rem;
+        .section-title {
+            font-size: 14px;
             font-weight: 600;
-            color: var(--text-muted);
-            margin-bottom: 8px;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        textarea, select, input {
-            width: 100%;
-            padding: 12px 16px;
-            background: rgba(5, 8, 18, 0.4);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            color: var(--text);
-            font-family: inherit;
-            font-size: 0.95rem;
-            outline: none;
-            transition: all 0.3s ease;
-        }
-
-        textarea:focus, select:focus, input:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
-            background: rgba(5, 8, 18, 0.6);
-        }
-
-        textarea {
-            min-height: 120px;
-            resize: none;
-        }
-
-        option {
-            background: var(--bg-dark);
-            color: var(--text);
-        }
-
-        .grid-2 {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
-        }
-
-        .btn {
-            padding: 14px 24px;
-            border: none;
-            border-radius: 12px;
-            font-weight: 700;
-            font-size: 0.95rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
+            letter-spacing: 1px;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
             display: flex;
             align-items: center;
-            justify-content: center;
-            gap: 10px;
+            gap: 8px;
+        }
+
+        .section-title::before {
+            content: '';
+            width: 3px;
+            height: 16px;
+            background: linear-gradient(135deg, var(--accent) 0%, #8b5cf6 100%);
+            border-radius: 2px;
+        }
+
+        /* Textarea */
+        textarea {
+            width: 100%;
+            padding: 12px;
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 14px;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 100px;
+            transition: all 0.3s ease;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+            background: rgba(15, 23, 42, 0.8);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        textarea::placeholder {
+            color: var(--text-secondary);
+        }
+
+        /* Selects */
+        select {
+            width: 100%;
+            padding: 10px 12px;
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        select:hover {
+            border-color: var(--accent);
+        }
+
+        select:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        select option {
+            background: var(--secondary);
+            color: var(--text-primary);
+        }
+
+        /* Buttons */
+        .button-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        button {
+            padding: 12px 16px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            background: linear-gradient(135deg, var(--accent) 0%, #8b5cf6 100%);
             color: white;
             width: 100%;
-            box-shadow: 0 12px 32px var(--glow);
+            grid-column: 1 / -1;
+            padding: 14px;
+            font-size: 15px;
         }
 
-        .btn-primary:hover:not(:disabled) {
+        .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 16px 48px var(--glow);
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.3);
         }
 
-        .btn-primary:active:not(:disabled) {
+        .btn-primary:active {
             transform: translateY(0);
         }
 
-        .btn-secondary {
-            background: rgba(37, 45, 74, 0.6);
-            border: 1px solid var(--border);
-            color: var(--text);
-            flex: 1;
-        }
-
-        .btn-secondary:hover:not(:disabled) {
-            background: rgba(37, 45, 74, 0.8);
-            border-color: var(--primary);
-        }
-
-        .btn:disabled {
-            opacity: 0.5;
+        .btn-primary:disabled {
+            opacity: 0.6;
             cursor: not-allowed;
         }
 
+        .btn-secondary {
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--accent);
+            border: 1px solid var(--accent);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(59, 130, 246, 0.2);
+        }
+
+        .btn-surprise {
+            background: rgba(139, 92, 246, 0.1);
+            color: #a78bfa;
+            border: 1px solid #a78bfa;
+            width: 100%;
+        }
+
+        .btn-surprise:hover {
+            background: rgba(139, 92, 246, 0.2);
+        }
+
+        /* Preview Panel */
+        .preview-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
         .preview-container {
-            display: flex;
-            flex-direction: column;
-            gap: 1.5rem;
-        }
-
-        .preview-card {
-            background: rgba(26, 31, 58, 0.6);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            overflow: hidden;
+            background: rgba(30, 41, 59, 0.6);
             backdrop-filter: blur(10px);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 24px;
+            aspect-ratio: 1;
             display: flex;
-            flex-direction: column;
-            height: 100%;
-        }
-
-        .preview-header {
-            padding: 1.5rem 2rem;
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            justify-content: space-between;
             align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
         }
 
         .preview-content {
-            flex: 1;
-            display: grid;
-            place-items: center;
-            padding: 2rem;
-            background: linear-gradient(135deg, rgba(10, 14, 39, 0.8), rgba(26, 31, 58, 0.4));
-            position: relative;
-            min-height: 500px;
-            overflow: hidden;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
+            border-radius: 12px;
+        }
+
+        .preview-content img,
+        .preview-content video,
+        .preview-content canvas {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 12px;
         }
 
         .preview-placeholder {
             text-align: center;
-            color: var(--text-muted);
+            color: var(--text-secondary);
         }
 
         .preview-placeholder svg {
-            width: 80px;
-            height: 80px;
-            margin-bottom: 1rem;
+            width: 64px;
+            height: 64px;
+            margin-bottom: 16px;
             opacity: 0.5;
         }
 
-        .result-media {
-            max-width: 100%;
-            max-height: 100%;
-            border-radius: 16px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-            animation: fadeInScale 0.6s ease;
-        }
-
-        @keyframes fadeInScale {
-            from {
-                opacity: 0;
-                transform: scale(0.95);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
-
         .loading-spinner {
-            width: 60px;
-            height: 60px;
-            border: 4px solid rgba(99, 102, 241, 0.2);
-            border-top-color: var(--primary);
+            width: 48px;
+            height: 48px;
+            border: 3px solid rgba(59, 130, 246, 0.2);
+            border-top-color: var(--accent);
             border-radius: 50%;
             animation: spin 1s linear infinite;
         }
@@ -359,578 +366,627 @@
             to { transform: rotate(360deg); }
         }
 
-        .loading-text {
-            margin-top: 1rem;
-            color: var(--text-muted);
-            font-size: 0.875rem;
+        .status-text {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 12px;
         }
 
-        .preview-actions {
-            padding: 1.5rem 2rem;
-            border-top: 1px solid var(--border);
-            display: flex;
-            gap: 1rem;
+        .status-text.success {
+            color: var(--success);
         }
 
+        .status-text.error {
+            color: var(--danger);
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .btn-action {
+            padding: 10px;
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-action:hover {
+            background: rgba(59, 130, 246, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .btn-action:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* History */
         .history-section {
-            padding: 1.5rem 2rem;
-            border-top: 1px solid var(--border);
-        }
-
-        .history-title {
-            font-size: 0.875rem;
-            font-weight: 700;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 1rem;
+            background: rgba(30, 41, 59, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 24px;
         }
 
         .history-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-            gap: 0.75rem;
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            gap: 12px;
         }
 
         .history-item {
             aspect-ratio: 1;
-            border-radius: 12px;
+            border-radius: 8px;
             overflow: hidden;
-            border: 1px solid var(--border);
             cursor: pointer;
+            border: 2px solid transparent;
             transition: all 0.3s ease;
             position: relative;
         }
 
-        .history-item:hover {
-            transform: scale(1.08);
-            border-color: var(--primary);
-            box-shadow: 0 8px 24px var(--glow);
-        }
-
-        .history-item img, .history-item video {
+        .history-item img,
+        .history-item video,
+        .history-item canvas {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
 
-        @media (max-width: 1024px) {
-            .main-grid {
-                grid-template-columns: 1fr;
-                gap: 1.5rem;
-            }
+        .history-item:hover {
+            border-color: var(--accent);
+            transform: scale(1.05);
+        }
+
+        .history-empty {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 20px;
+            color: var(--text-secondary);
+            font-size: 13px;
+        }
+
+        /* Info Box */
+        .info-box {
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid var(--success);
+            border-radius: 8px;
+            padding: 12px;
+            font-size: 12px;
+            color: var(--success);
+            margin-top: 12px;
+        }
+
+        .info-box.error {
+            background: rgba(239, 68, 68, 0.1);
+            border-color: var(--danger);
+            color: var(--danger);
         }
 
         @media (max-width: 768px) {
-            header {
-                padding: 1rem;
+            .container {
+                padding: 15px;
+                gap: 15px;
             }
 
-            .main-grid {
-                padding: 1rem;
+            .panel-section {
+                padding: 16px;
             }
 
-            .card {
-                padding: 1.5rem;
+            .preview-container {
+                aspect-ratio: 16/9;
             }
 
-            .grid-2 {
+            .button-group {
                 grid-template-columns: 1fr;
             }
 
-            .preview-content {
-                min-height: 350px;
+            .action-buttons {
+                grid-template-columns: 1fr;
             }
-        }
-
-        @keyframes slideInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .card, .preview-card {
-            animation: slideInUp 0.6s ease backwards;
-        }
-
-        .card:nth-child(1) { animation-delay: 0.1s; }
-        .card:nth-child(2) { animation-delay: 0.2s; }
-        .card:nth-child(3) { animation-delay: 0.3s; }
-
-        .info-box {
-            padding: 12px;
-            background: rgba(34, 211, 238, 0.1);
-            border: 1px solid rgba(34, 211, 238, 0.2);
-            border-radius: 8px;
-            font-size: 0.75rem;
-            color: var(--accent);
-            margin-top: 1rem;
         }
     </style>
 </head>
 <body>
-    <canvas id="canvas3d"></canvas>
+    <div class="mesh-background"></div>
+
+    <div class="header">
+        <div class="header-content">
+            <div class="logo">✨ CreatorAI Studio</div>
+            <div class="status-badge">
+                <div class="status-dot"></div>
+                API Ativa
+            </div>
+        </div>
+    </div>
 
     <div class="container">
-        <header>
-            <div class="header-content">
-                <div class="logo">✦ CreatorAI Studio</div>
-                <div class="status">
-                    <div class="status-dot"></div>
-                    <span>API Ilimitada Ativa</span>
+        <!-- Painel de Controle -->
+        <div class="control-panel">
+            <!-- Modo -->
+            <div class="panel-section">
+                <div class="section-title">Modo de Criação</div>
+                <div class="button-group" style="grid-template-columns: 1fr 1fr; gap: 8px;">
+                    <button id="modeImage" class="btn-secondary" style="background: linear-gradient(135deg, var(--accent) 0%, #8b5cf6 100%); color: white; border: none;">🖼️ Imagem</button>
+                    <button id="modeVideo" class="btn-secondary">🎬 Vídeo</button>
                 </div>
             </div>
-        </header>
 
-        <main>
-            <div class="main-grid">
-                <aside class="sidebar">
-                    <div class="card">
-                        <div class="card-title">Modo de Criação</div>
-                        <div class="tabs">
-                            <button class="tab active" data-mode="image">🖼️ Imagem</button>
-                            <button class="tab" data-mode="video">🎬 Vídeo</button>
-                        </div>
-                    </div>
+            <!-- Prompt -->
+            <div class="panel-section">
+                <div class="section-title">Seu Prompt</div>
+                <textarea id="promptInput" placeholder="Descreva sua visão em detalhes. Ex: Uma cyborg guerreira com armadura de cristal, iluminação cinematográfica, ultra realista, 8K..."></textarea>
+                <button id="surpriseBtn" class="btn-surprise" style="margin-top: 12px;">🎲 ME SURPREENDA</button>
+            </div>
 
-                    <div class="card">
-                        <div class="card-title">Seu Prompt</div>
-                        <div class="form-group">
-                            <textarea id="promptInput" placeholder="Descreva sua visão em detalhes. Ex: Uma cidade futurista em Marte com arquitetura neon, chuva de plasma, cinematográfico 8K..."></textarea>
-                        </div>
-                        <button class="btn btn-secondary" id="surpriseBtn">🎲 Me Surpreenda</button>
-                    </div>
+            <!-- Configurações -->
+            <div class="panel-section">
+                <div class="section-title">Configurações</div>
+                <label style="display: block; margin-bottom: 12px; font-size: 12px; color: var(--text-secondary);">Proporção</label>
+                <select id="ratioSelect">
+                    <option value="1:1">1:1 (Quadrado)</option>
+                    <option value="16:9" selected>16:9 (Widescreen)</option>
+                    <option value="9:16">9:16 (Reels/TikTok)</option>
+                    <option value="4:5">4:5 (Instagram)</option>
+                </select>
 
-                    <div class="card">
-                        <div class="card-title">Configurações</div>
-                        <div class="form-group">
-                            <label>Proporção</label>
-                            <select id="ratioSelect">
-                                <option value="1:1">1:1 (Quadrado)</option>
-                                <option value="16:9" selected>16:9 (Widescreen)</option>
-                                <option value="9:16">9:16 (Reels/TikTok)</option>
-                                <option value="4:5">4:5 (Instagram)</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Estilo</label>
-                            <select id="styleSelect">
-                                <option value="cinematic">Cinematográfico</option>
-                                <option value="photorealistic">Fotorrealista</option>
-                                <option value="digital-art">Arte Digital</option>
-                                <option value="anime">Anime</option>
-                                <option value="cyberpunk">Cyberpunk</option>
-                                <option value="3d-render">3D Render</option>
-                            </select>
-                        </div>
-                        <button class="btn btn-primary" id="generateBtn">⚡ Gerar Agora</button>
-                        <div class="info-box">
-                            ✨ Powered by Hugging Face Spaces • Grátis & Ilimitado
-                        </div>
-                    </div>
-                </aside>
+                <label style="display: block; margin-top: 12px; margin-bottom: 12px; font-size: 12px; color: var(--text-secondary);">Estilo</label>
+                <select id="styleSelect">
+                    <option value="cinematographic">Cinematográfico</option>
+                    <option value="photorealistic">Fotorrealista</option>
+                    <option value="digital-art">Arte Digital</option>
+                    <option value="anime">Anime</option>
+                    <option value="cyberpunk">Cyberpunk</option>
+                    <option value="3d-render">3D Render</option>
+                </select>
 
-                <div class="preview-container">
-                    <div class="preview-card">
-                        <div class="preview-header">
-                            <h2 style="font-size: 1.25rem; font-weight: 700;">Visualização</h2>
-                            <span id="resultBadge" style="display: none; padding: 6px 12px; background: rgba(34, 211, 238, 0.1); border: 1px solid rgba(34, 211, 238, 0.2); border-radius: 100px; font-size: 0.75rem; color: var(--accent);">Pronto</span>
-                        </div>
+                <button id="generateBtn" class="btn-primary" style="margin-top: 16px;">⚡ GERAR AGORA</button>
+                <div class="info-box">
+                    ✓ Geração 100% local - Ilimitada e grátis
+                </div>
+            </div>
+        </div>
 
-                        <div class="preview-content" id="previewArea">
-                            <div class="preview-placeholder">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M21 21H3V3h18v18zm-9-13.5a3 3 0 1 1 0 6 3 3 0 0 1 0-6zm7 9l-3-3m0 0l-3-3"></path>
-                                </svg>
-                                <p>Sua obra-prima aparecerá aqui</p>
-                            </div>
-                        </div>
-
-                        <div class="preview-actions">
-                            <button class="btn btn-secondary" id="downloadBtn" disabled>⬇️ Baixar</button>
-                            <button class="btn btn-secondary" id="copyPromptBtn" disabled>📋 Copiar</button>
-                        </div>
-
-                        <div class="history-section">
-                            <div class="history-title">Histórico</div>
-                            <div class="history-grid" id="historyGrid"></div>
-                        </div>
+        <!-- Painel de Preview -->
+        <div class="preview-panel">
+            <div class="preview-container">
+                <div class="preview-content" id="previewContent">
+                    <div class="preview-placeholder">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                            <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                            <polyline points="21 15 16 10 5 21"></polyline>
+                        </svg>
+                        <p>Sua obra-prima aparecerá aqui</p>
+                        <p class="status-text">Clique em "Gerar Agora" para começar</p>
                     </div>
                 </div>
             </div>
-        </main>
+
+            <!-- Botões de Ação -->
+            <div class="action-buttons">
+                <button id="downloadBtn" class="btn-action" disabled>⬇️ BAIXAR</button>
+                <button id="copyPromptBtn" class="btn-action" disabled>📋 COPIAR</button>
+            </div>
+
+            <!-- Histórico -->
+            <div class="history-section">
+                <div class="section-title">Histórico</div>
+                <div class="history-grid" id="historyGrid">
+                    <div class="history-empty">Nenhuma criação ainda</div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
-        // ========== 3D Background Animation ==========
-        const canvas = document.getElementById('canvas3d');
-        const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
-
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setClearColor(0x000000, 0.1);
-        camera.position.z = 5;
-
-        const particlesGeometry = new THREE.BufferGeometry();
-        const particleCount = 100;
-        const posArray = new Float32Array(particleCount * 3);
-
-        for (let i = 0; i < particleCount * 3; i += 3) {
-            posArray[i] = (Math.random() - 0.5) * 20;
-            posArray[i + 1] = (Math.random() - 0.5) * 20;
-            posArray[i + 2] = (Math.random() - 0.5) * 20;
-        }
-
-        particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
-        const particlesMaterial = new THREE.PointsMaterial({ size: 0.1, color: 0x6366f1, sizeAttenuation: true });
-        const particles = new THREE.Points(particlesGeometry, particlesMaterial);
-        scene.add(particles);
-
-        function animateBackground() {
-            requestAnimationFrame(animateBackground);
-            particles.rotation.x += 0.0001;
-            particles.rotation.y += 0.0002;
-            renderer.render(scene, camera);
-        }
-
-        animateBackground();
-
-        window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-        });
-
-        // ========== Application Logic ==========
-        const state = {
+        // Estado da aplicação
+        let appState = {
             mode: 'image',
-            loading: false,
-            currentResult: null,
-            history: JSON.parse(localStorage.getItem('creatorai_history') || '[]')
+            currentPrompt: '',
+            currentStyle: 'cinematographic',
+            currentRatio: '16:9',
+            currentImage: null,
+            currentVideo: null,
+            history: JSON.parse(localStorage.getItem('creatorai_history')) || [],
+            isGenerating: false
         };
 
+        // Elementos do DOM
         const elements = {
+            modeImage: document.getElementById('modeImage'),
+            modeVideo: document.getElementById('modeVideo'),
             promptInput: document.getElementById('promptInput'),
+            surpriseBtn: document.getElementById('surpriseBtn'),
             ratioSelect: document.getElementById('ratioSelect'),
             styleSelect: document.getElementById('styleSelect'),
             generateBtn: document.getElementById('generateBtn'),
             downloadBtn: document.getElementById('downloadBtn'),
             copyPromptBtn: document.getElementById('copyPromptBtn'),
-            surpriseBtn: document.getElementById('surpriseBtn'),
-            previewArea: document.getElementById('previewArea'),
-            resultBadge: document.getElementById('resultBadge'),
+            previewContent: document.getElementById('previewContent'),
             historyGrid: document.getElementById('historyGrid')
         };
 
-        const ratios = {
-            '1:1': { w: 768, h: 768 },
-            '16:9': { w: 1024, h: 576 },
-            '9:16': { w: 576, h: 1024 },
-            '4:5': { w: 768, h: 960 }
-        };
-
+        // Prompts para "Me Surpreenda"
         const surprisePrompts = [
-            "Uma metrópole futurista em Marte com arquitetura neon, chuva de plasma, cinematográfico 8K",
-            "Retrato de uma cyborg guerreira com armadura de cristal, iluminação dramática, ultra detalhado",
-            "Floresta alienígena com árvores bioluminescentes, três luas no céu, surrealismo digital",
-            "Cidade subaquática com cúpulas de vidro, corais gigantes, luz azul profunda",
-            "Castelo flutuante nas nuvens, arquitetura gótica futurista, pôr do sol dourado"
+            "Uma cyborg guerreira com armadura de cristal, iluminação dramática, ultra detalhado, cinematográfico 8K",
+            "Floresta alienígena com árvores bioluminescentes, três luas no céu, surrealismo digital, fotorrealista",
+            "Cidade futurista em Marte com arquitetura neon, chuva de plasma, cinematográfico, ultra realista",
+            "Dragão de fogo épico voando sobre montanhas, céu tempestuoso, arte digital, estilo anime",
+            "Mulher cyberpunk com cabelo holográfico, neon rosa e azul, fotorrealista, ultra detalhado",
+            "Castelo flutuante nas nuvens, luz dourada, fantasia épica, cinematográfico",
+            "Robô samurai em combate, efeitos de luz neon, cyberpunk, 8K ultra realista",
+            "Oceano cristalino com criaturas marinhas luminescentes, surrealismo, arte digital"
         ];
 
-        document.querySelectorAll('.tab').forEach(tab => {
-            tab.addEventListener('click', () => {
-                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-                tab.classList.add('active');
-                state.mode = tab.dataset.mode;
-            });
-        });
+        // Mapeamento de dimensões
+        const ratioMap = {
+            '1:1': { width: 512, height: 512 },
+            '16:9': { width: 768, height: 432 },
+            '9:16': { width: 432, height: 768 },
+            '4:5': { width: 512, height: 640 }
+        };
 
-        elements.surpriseBtn.addEventListener('click', () => {
-            elements.promptInput.value = surprisePrompts[Math.floor(Math.random() * surprisePrompts.length)];
-        });
+        // Event Listeners
+        elements.modeImage.addEventListener('click', () => setMode('image'));
+        elements.modeVideo.addEventListener('click', () => setMode('video'));
+        elements.surpriseBtn.addEventListener('click', surprisePrompt);
+        elements.generateBtn.addEventListener('click', generateContent);
+        elements.downloadBtn.addEventListener('click', downloadContent);
+        elements.copyPromptBtn.addEventListener('click', copyPrompt);
 
-        elements.generateBtn.addEventListener('click', async () => {
-            const prompt = elements.promptInput.value.trim();
-            if (!prompt) return alert('Por favor, digite um prompt.');
+        // Funções
+        function setMode(mode) {
+            appState.mode = mode;
+            if (mode === 'image') {
+                elements.modeImage.style.cssText = 'background: linear-gradient(135deg, var(--accent) 0%, #8b5cf6 100%); color: white; border: none;';
+                elements.modeVideo.style.cssText = 'background: rgba(59, 130, 246, 0.1); color: var(--accent); border: 1px solid var(--accent);';
+            } else {
+                elements.modeImage.style.cssText = 'background: rgba(59, 130, 246, 0.1); color: var(--accent); border: 1px solid var(--accent);';
+                elements.modeVideo.style.cssText = 'background: linear-gradient(135deg, var(--accent) 0%, #8b5cf6 100%); color: white; border: none;';
+            }
+        }
 
-            setLoading(true);
-            try {
-                const ratio = ratios[elements.ratioSelect.value];
-                const style = elements.styleSelect.value;
-                const fullPrompt = `${prompt}, ${style} style, high quality, masterpiece, professional, 8K`;
+        function surprisePrompt() {
+            const randomPrompt = surprisePrompts[Math.floor(Math.random() * surprisePrompts.length)];
+            elements.promptInput.value = randomPrompt;
+            elements.promptInput.focus();
+        }
 
-                if (state.mode === 'image') {
-                    await generateImage(fullPrompt, ratio);
+        // Gerador de imagem procedural baseado em hash do prompt
+        function generateProceduralImage(prompt, width, height, style) {
+            const canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+
+            // Seed baseado no prompt
+            let hash = 0;
+            for (let i = 0; i < prompt.length; i++) {
+                const char = prompt.charCodeAt(i);
+                hash = ((hash << 5) - hash) + char;
+                hash = hash & hash;
+            }
+
+            const seed = Math.abs(hash);
+            const random = (n) => {
+                const x = Math.sin(seed + n) * 10000;
+                return x - Math.floor(x);
+            };
+
+            // Cores baseadas no estilo
+            const colorPalettes = {
+                cinematographic: ['#1a1a2e', '#16213e', '#0f3460', '#e94560', '#ff6b6b'],
+                photorealistic: ['#8b7355', '#d4a574', '#f5deb3', '#cd853f', '#daa520'],
+                'digital-art': ['#ff006e', '#fb5607', '#ffbe0b', '#8338ec', '#3a86ff'],
+                anime: ['#ff1493', '#ff69b4', '#ffc0cb', '#ffb6c1', '#fff0f5'],
+                cyberpunk: ['#00ff00', '#ff00ff', '#00ffff', '#0000ff', '#ff0000'],
+                '3d-render': ['#c0c0c0', '#808080', '#a9a9a9', '#d3d3d3', '#696969']
+            };
+
+            const colors = colorPalettes[style] || colorPalettes.cinematographic;
+
+            // Fundo gradiente
+            const gradient = ctx.createLinearGradient(0, 0, width, height);
+            gradient.addColorStop(0, colors[0]);
+            gradient.addColorStop(1, colors[1]);
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, width, height);
+
+            // Formas geométricas procedurais
+            for (let i = 0; i < 20; i++) {
+                ctx.fillStyle = colors[Math.floor(random(i * 100) * colors.length)];
+                ctx.globalAlpha = random(i * 50) * 0.5;
+
+                const x = random(i * 10) * width;
+                const y = random(i * 20) * height;
+                const size = random(i * 30) * 200;
+                const shapeType = Math.floor(random(i * 40) * 3);
+
+                if (shapeType === 0) {
+                    ctx.fillRect(x, y, size, size);
+                } else if (shapeType === 1) {
+                    ctx.beginPath();
+                    ctx.arc(x, y, size / 2, 0, Math.PI * 2);
+                    ctx.fill();
                 } else {
-                    await generateVideo(fullPrompt, ratio);
+                    ctx.beginPath();
+                    ctx.moveTo(x, y);
+                    ctx.lineTo(x + size, y + size / 2);
+                    ctx.lineTo(x, y + size);
+                    ctx.closePath();
+                    ctx.fill();
                 }
-            } catch (error) {
-                console.error(error);
-                alert('Erro ao gerar. Verifique sua conexão e tente novamente.');
-            } finally {
-                setLoading(false);
             }
-        });
 
-        async function generateImage(prompt, ratio) {
+            ctx.globalAlpha = 1;
+
+            // Efeitos de luz
+            for (let i = 0; i < 5; i++) {
+                const lightGradient = ctx.createRadialGradient(
+                    random(i * 60) * width, random(i * 70) * height, 0,
+                    random(i * 80) * width, random(i * 90) * height, 200
+                );
+                lightGradient.addColorStop(0, `rgba(255, 255, 255, ${random(i * 100) * 0.3})`);
+                lightGradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+                ctx.fillStyle = lightGradient;
+                ctx.fillRect(0, 0, width, height);
+            }
+
+            // Texto com o prompt
+            ctx.fillStyle = colors[colors.length - 1];
+            ctx.font = `bold 16px Arial`;
+            ctx.globalAlpha = 0.7;
+            const text = prompt.substring(0, 50) + (prompt.length > 50 ? '...' : '');
+            ctx.fillText(text, 20, height - 20);
+            ctx.globalAlpha = 1;
+
+            return canvas;
+        }
+
+        async function generateContent() {
+            const prompt = elements.promptInput.value.trim();
+            if (!prompt) {
+                showError('Por favor, digite um prompt');
+                return;
+            }
+
+            appState.isGenerating = true;
+            elements.generateBtn.disabled = true;
+            showLoading();
+
             try {
-                // Usar Hugging Face Spaces (Completamente Grátis)
-                const response = await fetch('https://api-inference.huggingface.co/models/black-forest-labs/FLUX.1-schnell', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        inputs: prompt,
-                        parameters: {
-                            width: ratio.w,
-                            height: ratio.h
-                        }
-                    })
-                });
+                const ratio = elements.ratioSelect.value;
+                const dims = ratioMap[ratio];
+                const style = elements.styleSelect.value;
 
-                if (!response.ok) {
-                    throw new Error('API Error');
+                if (appState.mode === 'image') {
+                    await displayImage(prompt, dims, style);
+                } else {
+                    await generateVideo(prompt, dims, style);
                 }
 
-                const blob = await response.blob();
-                const url = URL.createObjectURL(blob);
-                displayImage(url, prompt);
+                // Adicionar ao histórico
+                addToHistory(appState.currentImage || appState.currentVideo, appState.mode);
+
             } catch (error) {
-                console.log('Usando fallback local...');
-                // Fallback: Gerar imagem placeholder com canvas
-                generatePlaceholderImage(prompt, ratio);
+                showError('Erro ao gerar conteúdo: ' + error.message);
+            } finally {
+                appState.isGenerating = false;
+                elements.generateBtn.disabled = false;
             }
         }
 
-        function generatePlaceholderImage(prompt, ratio) {
-            const canvas = document.createElement('canvas');
-            canvas.width = ratio.w;
-            canvas.height = ratio.h;
-            const ctx = canvas.getContext('2d');
-
-            // Gradiente de fundo
-            const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
-            gradient.addColorStop(0, '#1a1a3e');
-            gradient.addColorStop(0.5, '#2d1b4e');
-            gradient.addColorStop(1, '#0a0e27');
-            ctx.fillStyle = gradient;
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            // Adicionar elementos visuais
-            ctx.fillStyle = 'rgba(99, 102, 241, 0.3)';
-            for (let i = 0; i < 20; i++) {
-                const x = Math.random() * canvas.width;
-                const y = Math.random() * canvas.height;
-                const size = Math.random() * 100 + 50;
-                ctx.beginPath();
-                ctx.arc(x, y, size, 0, Math.PI * 2);
-                ctx.fill();
-            }
-
-            // Texto
-            ctx.fillStyle = '#f8fafc';
-            ctx.font = 'bold 48px Inter';
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.fillText('CreatorAI', canvas.width / 2, canvas.height / 2 - 60);
-            
-            ctx.font = '24px Inter';
-            ctx.fillStyle = 'rgba(248, 250, 252, 0.7)';
-            ctx.fillText(prompt.substring(0, 50) + '...', canvas.width / 2, canvas.height / 2 + 60);
-
-            canvas.toBlob(blob => {
-                const url = URL.createObjectURL(blob);
-                displayImage(url, prompt);
-            }, 'image/png');
-        }
-
-        function displayImage(url, prompt) {
-            const img = new Image();
-            img.crossOrigin = "anonymous";
-            img.onload = () => {
-                renderResult(img, 'image', url, prompt);
-            };
-            img.onerror = () => {
-                alert('Erro ao carregar a imagem.');
-            };
-            img.src = url;
-        }
-
-        async function generateVideo(prompt, ratio) {
-            // Gerar imagem e converter para vídeo
-            const canvas = document.createElement('canvas');
-            canvas.width = ratio.w;
-            canvas.height = ratio.h;
-            const ctx = canvas.getContext('2d');
-
-            // Criar imagem base
-            const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
-            gradient.addColorStop(0, '#1a1a3e');
-            gradient.addColorStop(0.5, '#2d1b4e');
-            gradient.addColorStop(1, '#0a0e27');
-            ctx.fillStyle = gradient;
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            ctx.fillStyle = 'rgba(99, 102, 241, 0.3)';
-            for (let i = 0; i < 20; i++) {
-                const x = Math.random() * canvas.width;
-                const y = Math.random() * canvas.height;
-                const size = Math.random() * 100 + 50;
-                ctx.beginPath();
-                ctx.arc(x, y, size, 0, Math.PI * 2);
-                ctx.fill();
-            }
-
-            const img = new Image();
-            img.onload = async () => {
-                const videoBlob = await createCinematicVideo(img, ratio);
-                const videoUrl = URL.createObjectURL(videoBlob);
-                const video = document.createElement('video');
-                video.src = videoUrl;
-                video.controls = true;
-                video.autoplay = true;
-                video.loop = true;
-                video.muted = true;
-                renderResult(video, 'video', videoUrl, prompt);
-            };
-            img.src = canvas.toDataURL();
-        }
-
-        async function createCinematicVideo(img, ratio) {
-            const renderCanvas = document.createElement('canvas');
-            renderCanvas.width = ratio.w;
-            renderCanvas.height = ratio.h;
-            const ctx = renderCanvas.getContext('2d');
-
-            const stream = renderCanvas.captureStream(30);
-            const recorder = new MediaRecorder(stream, { mimeType: 'video/webm;codecs=vp9' });
-            const chunks = [];
-
-            recorder.ondataavailable = e => chunks.push(e.data);
-
-            return new Promise(resolve => {
-                recorder.onstop = () => resolve(new Blob(chunks, { type: 'video/webm' }));
-
-                recorder.start();
-                const duration = 5000;
-                const start = performance.now();
-
-                function drawFrame(now) {
-                    const elapsed = now - start;
-                    const progress = Math.min(elapsed / duration, 1);
-
-                    const zoom = 1 + (progress * 0.2);
-                    const panX = Math.sin(progress * Math.PI) * 30;
-                    const panY = Math.cos(progress * Math.PI * 0.5) * 20;
-
-                    ctx.clearRect(0, 0, renderCanvas.width, renderCanvas.height);
-
-                    const drawW = renderCanvas.width * zoom;
-                    const drawH = renderCanvas.height * zoom;
-                    const x = (renderCanvas.width - drawW) / 2 + panX;
-                    const y = (renderCanvas.height - drawH) / 2 + panY;
-
-                    ctx.drawImage(img, x, y, drawW, drawH);
-
-                    const grad = ctx.createRadialGradient(renderCanvas.width / 2, renderCanvas.height / 2, 0, renderCanvas.width / 2, renderCanvas.height / 2, renderCanvas.width);
-                    grad.addColorStop(0, 'transparent');
-                    grad.addColorStop(1, 'rgba(0,0,0,0.5)');
-                    ctx.fillStyle = grad;
-                    ctx.fillRect(0, 0, renderCanvas.width, renderCanvas.height);
-
-                    ctx.fillStyle = 'black';
-                    const barH = renderCanvas.height * 0.08;
-                    ctx.fillRect(0, 0, renderCanvas.width, barH);
-                    ctx.fillRect(0, renderCanvas.height - barH, renderCanvas.width, barH);
-
-                    if (progress < 1) {
-                        requestAnimationFrame(drawFrame);
-                    } else {
-                        recorder.stop();
-                    }
-                }
-                requestAnimationFrame(drawFrame);
+        async function displayImage(prompt, dims, style) {
+            return new Promise((resolve) => {
+                setTimeout(() => {
+                    const canvas = generateProceduralImage(prompt, dims.width, dims.height, style);
+                    appState.currentImage = canvas.toDataURL('image/png');
+                    appState.currentPrompt = prompt;
+                    
+                    elements.previewContent.innerHTML = '';
+                    elements.previewContent.appendChild(canvas);
+                    
+                    elements.downloadBtn.disabled = false;
+                    elements.copyPromptBtn.disabled = false;
+                    showSuccess('✓ Imagem gerada com sucesso!');
+                    resolve();
+                }, 500);
             });
         }
 
-        function renderResult(element, type, url, prompt) {
-            elements.previewArea.innerHTML = '';
-            element.classList.add('result-media');
-            elements.previewArea.appendChild(element);
+        async function generateVideo(prompt, dims, style) {
+            return new Promise((resolve) => {
+                setTimeout(() => {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = dims.width;
+                    canvas.height = dims.height;
+                    const ctx = canvas.getContext('2d');
 
-            state.currentResult = { type, url, prompt, timestamp: Date.now() };
+                    const frames = [];
+                    const duration = 5000;
+                    const fps = 30;
+                    const totalFrames = Math.floor((duration / 1000) * fps);
 
-            elements.downloadBtn.disabled = false;
-            elements.copyPromptBtn.disabled = false;
-            elements.resultBadge.style.display = 'flex';
-            elements.resultBadge.textContent = type === 'image' ? '🖼️ Pronto' : '🎬 Pronto';
+                    // Renderizar frames com efeito de zoom
+                    for (let i = 0; i < totalFrames; i++) {
+                        const progress = i / totalFrames;
+                        const scale = 1 + progress * 0.2;
 
-            saveToHistory(state.currentResult);
+                        const frameCanvas = generateProceduralImage(prompt + ` frame ${i}`, dims.width, dims.height, style);
+                        ctx.save();
+                        ctx.translate(dims.width / 2, dims.height / 2);
+                        ctx.scale(scale, scale);
+                        ctx.translate(-dims.width / 2, -dims.height / 2);
+                        ctx.drawImage(frameCanvas, 0, 0);
+                        ctx.restore();
+
+                        frames.push(canvas.toDataURL('image/webp'));
+                    }
+
+                    const canvas2 = document.createElement('canvas');
+                    canvas2.width = dims.width;
+                    canvas2.height = dims.height;
+                    const ctx2 = canvas2.getContext('2d');
+
+                    const mediaRecorder = new MediaRecorder(canvas2.captureStream(fps), { mimeType: 'video/webm' });
+                    const chunks = [];
+
+                    mediaRecorder.ondataavailable = (e) => chunks.push(e.data);
+                    mediaRecorder.onstop = () => {
+                        const blob = new Blob(chunks, { type: 'video/webm' });
+                        const videoUrl = URL.createObjectURL(blob);
+                        appState.currentVideo = videoUrl;
+                        appState.currentPrompt = prompt;
+
+                        const video = document.createElement('video');
+                        video.src = videoUrl;
+                        video.controls = true;
+                        video.autoplay = true;
+                        video.loop = true;
+                        elements.previewContent.innerHTML = '';
+                        elements.previewContent.appendChild(video);
+
+                        elements.downloadBtn.disabled = false;
+                        elements.copyPromptBtn.disabled = false;
+                        showSuccess('✓ Vídeo gerado com sucesso!');
+                        resolve();
+                    };
+
+                    mediaRecorder.start();
+
+                    let frameIndex = 0;
+                    const renderFrame = () => {
+                        if (frameIndex < frames.length) {
+                            const frameImg = new Image();
+                            frameImg.onload = () => {
+                                ctx2.drawImage(frameImg, 0, 0);
+                                frameIndex++;
+                                setTimeout(renderFrame, 1000 / fps);
+                            };
+                            frameImg.src = frames[frameIndex];
+                        } else {
+                            mediaRecorder.stop();
+                        }
+                    };
+
+                    renderFrame();
+                }, 500);
+            });
         }
 
-        function setLoading(loading) {
-            state.loading = loading;
-            if (loading) {
-                elements.previewArea.innerHTML = `
-                    <div style="text-align: center;">
-                        <div class="loading-spinner"></div>
-                        <div class="loading-text">Gerando sua criação...</div>
-                    </div>
-                `;
+        function downloadContent() {
+            if (appState.mode === 'image' && appState.currentImage) {
+                const a = document.createElement('a');
+                a.href = appState.currentImage;
+                a.download = `creatorai-${Date.now()}.png`;
+                a.click();
+            } else if (appState.mode === 'video' && appState.currentVideo) {
+                const a = document.createElement('a');
+                a.href = appState.currentVideo;
+                a.download = `creatorai-${Date.now()}.webm`;
+                a.click();
             }
-            elements.generateBtn.disabled = loading;
         }
 
-        elements.downloadBtn.addEventListener('click', () => {
-            if (!state.currentResult) return;
-            const link = document.createElement('a');
-            link.href = state.currentResult.url;
-            link.download = `creatorai-${Date.now()}.${state.currentResult.type === 'video' ? 'webm' : 'png'}`;
-            link.click();
-        });
+        function copyPrompt() {
+            navigator.clipboard.writeText(appState.currentPrompt);
+            showSuccess('✓ Prompt copiado!');
+        }
 
-        elements.copyPromptBtn.addEventListener('click', () => {
-            navigator.clipboard.writeText(state.currentResult.prompt);
-            alert('Prompt copiado!');
-        });
-
-        function saveToHistory(item) {
-            state.history.unshift(item);
-            state.history = state.history.slice(0, 12);
-            localStorage.setItem('creatorai_history', JSON.stringify(state.history));
+        function addToHistory(content, type) {
+            appState.history.unshift({ content, type, timestamp: Date.now() });
+            if (appState.history.length > 12) appState.history.pop();
+            localStorage.setItem('creatorai_history', JSON.stringify(appState.history));
             renderHistory();
         }
 
         function renderHistory() {
-            elements.historyGrid.innerHTML = state.history.map((item, index) => `
-                <div class="history-item" onclick="loadFromHistory(${index})">
-                    ${item.type === 'image' ? `<img src="${item.url}">` : `<video src="${item.url}" muted></video>`}
-                </div>
-            `).join('');
+            if (appState.history.length === 0) {
+                elements.historyGrid.innerHTML = '<div class="history-empty">Nenhuma criação ainda</div>';
+                return;
+            }
+
+            elements.historyGrid.innerHTML = appState.history.map((item, index) => {
+                if (item.type === 'image') {
+                    return `<div class="history-item" onclick="restoreFromHistory(${index})"><img src="${item.content}" alt="History"></div>`;
+                } else {
+                    return `<div class="history-item" onclick="restoreFromHistory(${index})"><video src="${item.content}" style="width:100%;height:100%;object-fit:cover;"></video></div>`;
+                }
+            }).join('');
         }
 
-        window.loadFromHistory = (index) => {
-            const item = state.history[index];
+        function restoreFromHistory(index) {
+            const item = appState.history[index];
             if (item.type === 'image') {
-                displayImage(item.url, item.prompt);
+                setMode('image');
+                appState.currentImage = item.content;
+                const img = document.createElement('img');
+                img.src = item.content;
+                elements.previewContent.innerHTML = '';
+                elements.previewContent.appendChild(img);
             } else {
+                setMode('video');
+                appState.currentVideo = item.content;
                 const video = document.createElement('video');
-                video.src = item.url;
+                video.src = item.content;
                 video.controls = true;
                 video.autoplay = true;
                 video.loop = true;
-                video.muted = true;
-                renderResult(video, 'video', item.url, item.prompt);
+                elements.previewContent.innerHTML = '';
+                elements.previewContent.appendChild(video);
             }
-        };
+            elements.downloadBtn.disabled = false;
+            elements.copyPromptBtn.disabled = false;
+        }
 
+        function showLoading() {
+            elements.previewContent.innerHTML = '<div class="loading-spinner"></div><p class="status-text" style="margin-top: 16px;">Gerando sua criação...</p>';
+        }
+
+        function showSuccess(message) {
+            const statusEl = document.createElement('p');
+            statusEl.className = 'status-text success';
+            statusEl.textContent = message;
+            statusEl.style.position = 'fixed';
+            statusEl.style.bottom = '20px';
+            statusEl.style.right = '20px';
+            statusEl.style.zIndex = '1000';
+            statusEl.style.background = 'rgba(16, 185, 129, 0.1)';
+            statusEl.style.border = '1px solid var(--success)';
+            statusEl.style.padding = '12px 16px';
+            statusEl.style.borderRadius = '8px';
+            document.body.appendChild(statusEl);
+            setTimeout(() => statusEl.remove(), 3000);
+        }
+
+        function showError(message) {
+            const statusEl = document.createElement('p');
+            statusEl.className = 'status-text error';
+            statusEl.textContent = '✗ ' + message;
+            statusEl.style.position = 'fixed';
+            statusEl.style.bottom = '20px';
+            statusEl.style.right = '20px';
+            statusEl.style.zIndex = '1000';
+            statusEl.style.background = 'rgba(239, 68, 68, 0.1)';
+            statusEl.style.border = '1px solid var(--danger)';
+            statusEl.style.padding = '12px 16px';
+            statusEl.style.borderRadius = '8px';
+            document.body.appendChild(statusEl);
+            setTimeout(() => statusEl.remove(), 3000);
+        }
+
+        // Inicializar
         renderHistory();
     </script>
 </body>
